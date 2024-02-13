@@ -6,7 +6,7 @@ resource "aws_lambda_function" "lambda_parquet" {
   handler       = "json_to_parquet.json_to_parquet"
   runtime = "python3.10"
   timeout          = 180
-  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python311:5"]
+  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python310:8"]
 }
 
 # lambda triger  
@@ -27,7 +27,7 @@ resource "aws_lambda_function" "lambda_josn_to_parquet" {
   handler       = "parquet_to_json.parquet_to_json"
   runtime = "python3.10"
   timeout          = 180
-  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python311:5"]
+  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python310:8"]
 }
 resource "aws_lambda_permission" "allow_s3_parquet" {
   statement_id  = "Allow_s3"
@@ -47,7 +47,7 @@ resource "aws_lambda_function" "dummy_lambda" {
   handler       = "create_json.dummy"
   runtime = "python3.10"
   timeout          = 180
-  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python311:5"]
+  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python310:8"]
 }
 
 resource "aws_cloudwatch_event_rule" "scheduler" {
