@@ -49,6 +49,11 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
     
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+            python-version: '3.11'
+    
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
