@@ -57,6 +57,7 @@ jobs:
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
+            terraform_version: "1.7.3"
             aws-region: eu-west-2
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
             aws-secret-access-key: ${{ secrets.AWS_SECRET }}
@@ -66,7 +67,7 @@ jobs:
         
       - name: Terraform Init
         working-directory: terraform
-        run: terraform init -upgrade
+        run: terraform init
 
       - name: Terraform Plan
         working-directory: terraform
