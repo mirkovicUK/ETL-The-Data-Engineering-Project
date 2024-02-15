@@ -5,8 +5,8 @@ data "aws_region" "current" {}
 # Archive a single file.
 data "archive_file" "init" {
   type        = "zip"
-  source_file = "${path.module}/../src/ingestion.py"
-  output_path = "${path.module}/../ingestion.zip"
+  source_file = "${path.module}/../src/json_to_parquet.py"
+  output_path = "${path.module}/../json_to_parquet.zip"
 }
 
 data "archive_file" "init_parquet_to_json_lambda" {
@@ -17,6 +17,6 @@ data "archive_file" "init_parquet_to_json_lambda" {
 
 data "archive_file" "init_dummy_json" {
   type        = "zip"
-  source_file = "${path.module}/../src/create_json.py"
-  output_path = "${path.module}/../create_json.zip"
+  source_file = "${path.module}/../src/ingestion.py"
+  output_path = "${path.module}/../ingestion.zip"
 }
