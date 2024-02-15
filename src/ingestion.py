@@ -22,6 +22,7 @@ def ingestion(event, context):
 
     logger.info(event)
     logger.info(context)
+    logger.info(DB_credentials)
 
     try:
         con = wr.postgresql.connect(secret_id = DB_credentials)
