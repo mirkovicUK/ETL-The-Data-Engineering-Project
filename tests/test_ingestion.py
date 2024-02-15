@@ -1,7 +1,7 @@
 from src.ingestion import ingestion
 from unittest.mock import Mock, patch
 import pytest
-from src.ingestion import ingestion, InvalidConnection
+from src.ingestion import ingestion
 import logging
 
 @pytest.mark.describe('ingestion()')
