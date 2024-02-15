@@ -14,10 +14,3 @@ def test_ingestion_uses_pg8000_to_conect_to_DB(caplog):
             assert 'Not pg8000 connection' in caplog.text
 
 
-# @pytest.mark.describe('ingestion()')
-# @pytest.mark.it('wrong database credentials', 'incorect secret')
-# @patch('src.ingestion.DB_credentials', )
-# def test_ingestion_raises_exeption_if_wrong_db_credentials(db, caplog):
-#     db = 'incorect secret'
-#     ingestion('event', 'context')
-#     assert 'Invalid type for parameter SecretId' in caplog.text
