@@ -20,4 +20,4 @@ def test_ingestion_uses_pg8000_to_conect_to_DB(caplog):
 def test_ingestion_raises_exeption_if_wrong_db_credentials(db, caplog):
     db = 'incorect secret'
     ingestion('event', 'context')
-    assert 'Parameter validation failed cant read database' in caplog.text
+    assert 'Invalid type for parameter SecretId' in caplog.text

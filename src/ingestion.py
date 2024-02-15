@@ -17,22 +17,27 @@ logger.setLevel(logging.INFO)
 
 DB_credentials = "dtotesys_db"
 
+
 def ingestion(event, context):
+
+    logger.info(event)
+    logger.info(context)
 
     try:
         con = wr.postgresql.connect(secret_id = DB_credentials)
         if not isinstance(con, pg8000.Connection):
             raise InvalidConnection()
     
-        logger.infor('This seams to be working')
 
 
     except InvalidConnection:
         logger.warning('Not pg8000 connection')
+
     except ParamValidationError as e:
-        logger.error('Parameter validation failed cant read database')
+        logger.error(e)
+
     except ClientError as e:
-             logger.error('Secrets Manager can\'t find the specified secret.')
+        logger.error(e)
 
     except Exception as e:
         logger.error(e)
@@ -67,6 +72,7 @@ def ingestion(event, context):
 
 
 class InvalidConnection(Exception):
+    """Traps error where db connection is not pg8000."""
     pass
 
 if __name__ == "__main__":
