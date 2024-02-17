@@ -16,36 +16,46 @@ from pg8000.native import Connection, literal, identifier, DatabaseError
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 
-DB_credentials = "totesys_db"
+DB = "totesys_db"
+INGESTION_BUCKET = 'ingestion-zone-895623xx35'
 
 
 def ingestion(event, context):
+    """
+    Args:
+        param1: aws event obj
+        param2: aws context obj
 
-    logger.info(event)
-    logger.info(context)
-    logger.info(DB_credentials)
+    Returns:
+        JSON object 
+
+    Raises:
+        RuntimeError
+
+    Logs:
+        InvalidConnection: logs warning to CloudWatch
+        ParamValidationError: logs error to CloudWatch
+        ClientError: logs error to CloudWatch
+
+    """
 
     try:
-        con = wr.postgresql.connect(secret_id = DB_credentials)
+        con = wr.postgresql.connect(secret_id = DB)
         if not isinstance(con, pg8000.Connection):
             raise InvalidConnection()
 
-        time_of_last_query = datetime.datetime.strptime('2024-02-15 15:32:09.709000', '%Y-%m-%d %H:%M:%S.%f')
-
-        bucket_key = time_of_last_query.strftime('%Y-%m-%d-%H-%M-%S.%f')
+        time_of_last_query = get_time_of_last_query()
+        set_time_of_the_last_query(datetime.datetime.now())
+        bucket_key = time_of_last_query.strftime('%Y-%m-%d %H:%M:%S.%f')
 
         fact_sales_order = get_fact_sales_order(con, time_of_last_query)
 
         con.close()
 
-        s3 = boto3.client('s3')
-        s3.put_object(
-            Body=json.dumps(fact_sales_order, indent=2, default=str),
-            #Hard coded s3 bucket, change to new bucket name after every build
-            Bucket='ingestion-zone-895623xx35',
-            Key = bucket_key+'.json',
-            )
-
+        put_object_into_s3_bucket(data=fact_sales_order,
+                                  bucket_name='ingestion-zone-895623xx35',
+                                  key=bucket_key)
+        
 
     except InvalidConnection:
         logger.warning('Not pg8000 connection')
@@ -57,6 +67,43 @@ def ingestion(event, context):
         logger.error(e)
         raise RuntimeError
     
+
+def put_object_into_s3_bucket(data, bucket_name, key):
+
+    try:
+        s3 = boto3.client('s3')
+        s3.put_object(
+            Body=json.dumps(data, indent=2, default=str),
+            Bucket=bucket_name,
+            Key = key+'.json',
+            )
+    except Exception as e:
+        raise RuntimeError(e)
+    except ClientError as e:
+        logging.error(e.response['Error']['Message'])
+        raise ClientError(e)
+    
+
+def set_time_of_the_last_query(time):
+    try: 
+        client = boto3.client('ssm')
+        client.put_parameter(
+        Name = 'time',
+        Value=time.strftime('%Y-%m-%d %H:%M:%S.%f'),
+        Type='String',
+        Overwrite=True)
+    except Exception as e:
+        raise RuntimeError(e)
+    
+
+def get_time_of_last_query():
+    try:
+        client = boto3.client('ssm')
+        time = client.get_parameter(Name='time')['Parameter']['Value']
+        return datetime.datetime.strptime(time , '%Y-%m-%d %H:%M:%S.%f')
+    except Exception as e:
+        raise RuntimeError(e)
+
 
 def get_fact_sales_order(con, time_of_last_query):
     try:
@@ -100,4 +147,5 @@ class InvalidConnection(Exception):
     """Traps error where db connection is not pg8000."""
     pass
 
-# this is test for hash lets go 
+if __name__ == "__main__":
+    ingestion(None, None)

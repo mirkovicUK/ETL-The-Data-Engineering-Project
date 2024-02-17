@@ -10,6 +10,20 @@ logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 
 def get_fact_sales_order(con, time_of_last_query):
+    """
+    Args:
+        param1: pg8000 conection obj
+        param2: time of last db query
+
+    Returns:
+        {'fact_sales_order':[data_pooint1, data_point2...]}
+
+    Raises:
+        KeyError: Does not raises an exception.
+
+    Logs:
+        Logs error to cloud watch 
+    """
     try:
         table = 'sales_order'
         keys = ['sales_order_id', 'created_at', 'last_updated',
@@ -49,4 +63,4 @@ def get_fact_sales_order(con, time_of_last_query):
     
 
 if __name__ == "__main__":
-    get_fact_sales_order(wr.postgresql.connect(secret_id = "totesys_db"), datetime.datetime.strptime('2024-02-15 10:32:09.709000', '%Y-%m-%d %H:%M:%S.%f'))
+    print(get_fact_sales_order(wr.postgresql.connect(secret_id = "totesys_db"), datetime.datetime.strptime('2024-02-16 18:32:09.709000', '%Y-%m-%d %H:%M:%S.%f')))

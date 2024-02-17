@@ -4,11 +4,6 @@ import pytest
 import datetime
 from unittest.mock import Mock
 
-import awswrangler as wr
-from awswrangler import _utils
-pg8000_native = _utils.import_optional_dependency("pg8000.native")
-from pg8000.native import literal, identifier, DatabaseError
-
 
 @pytest.mark.describe('get_fact_sales_order()')
 @pytest.mark.it('query select all data points after given date')
