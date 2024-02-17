@@ -17,7 +17,7 @@ def set_time_of_the_last_query(time):
         None
     """
     try: 
-        client = boto3.client('ssm')
+        client = boto3.client('ssm', region_name='eu-west-2')
         client.put_parameter(
         Name = 'time',
         Value=time.strftime('%Y-%m-%d %H:%M:%S.%f'),
