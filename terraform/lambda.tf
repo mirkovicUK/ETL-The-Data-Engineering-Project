@@ -24,7 +24,7 @@ resource "aws_lambda_function" "lambda_josn_to_parquet" {
   filename      = "${path.module}/../parquet_to_json.zip"
   function_name = "${var.json_to_parquet_lambda}"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "ingestion.ingestion"
+  handler       = "parquet_to_json.parquet_to_json"
   runtime = "python3.10"
   timeout          = 180
   layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python310:8"]
