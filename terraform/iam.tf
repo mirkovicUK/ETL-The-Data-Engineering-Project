@@ -77,10 +77,10 @@ data "aws_iam_policy_document" "cw_document" {
   }
 
   #allowe lamda to read parameter store
-    statement {
+  statement {
 
     effect = "Allow"
-    actions = [ "ssm:GetParameter" ]
+    actions = [ "ssm:GetParameter", "ssm:PutParameter" ]
 
     resources = [
        "arn:aws:ssm:eu-west-2:381492264258:parameter/time"
