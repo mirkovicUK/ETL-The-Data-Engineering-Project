@@ -10,7 +10,7 @@ from src.utils.get_time_of_last_query import get_time_of_last_query as get_time
 @mock_aws
 def test_func_returns_datetime_object():
     time = datetime.datetime.now()
-    client = boto3.client('ssm')
+    client = boto3.client('ssm', region_name='eu-west-2')
     client.put_parameter(
     Name = 'time',
     Value=time.strftime('%Y-%m-%d %H:%M:%S.%f'),

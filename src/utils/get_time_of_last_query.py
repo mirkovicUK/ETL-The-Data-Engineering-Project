@@ -15,7 +15,7 @@ def get_time_of_last_query():
         None
     """
     try:
-        client = boto3.client('ssm')
+        client = boto3.client('ssm', region_name='eu-west-2')
         time = client.get_parameter(Name='time')['Parameter']['Value']
         return datetime.datetime.strptime(time , '%Y-%m-%d %H:%M:%S.%f')
     except Exception as e:
