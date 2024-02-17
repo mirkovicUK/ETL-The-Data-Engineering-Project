@@ -4,5 +4,4 @@ __pycache__
 v
 cache
 .env
-*.zip
 .terraform*

@@ -100,5 +100,4 @@ class InvalidConnection(Exception):
     """Traps error where db connection is not pg8000."""
     pass
 
-if __name__ == "__main__":
-    ingestion('s','s')
+# this is test for hash lets go 
