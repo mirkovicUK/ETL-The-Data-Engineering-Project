@@ -25,7 +25,7 @@ def json_to_parquet(event, context):
          data_json = get_text_from_file(s3, s3_bucket_name, s3_object_name)
          json_data = json.loads(data_json)
          logger.info('JSON DATA INSIDE LA')
-         df = pd.DataFrame.from_records(json_data, index=[0])
+         df = pd.DataFrame.from_records(json_data)
          ct = datetime.datetime.now()
          ts = str(ct.timestamp())
          #Hard coded s3 bucket, change to new bucket name after every build

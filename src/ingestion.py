@@ -46,7 +46,7 @@ def ingestion(event, context):
 
         time_of_last_query = get_time_of_last_query()
         set_time_of_the_last_query(datetime.datetime.now())
-        bucket_key = time_of_last_query.strftime('%Y-%m-%d %H:%M:%S.%f')
+        bucket_key = time_of_last_query.strftime('%Y-%m-%d-%H-%M-%S.%f')
 
         fact_sales_order = get_fact_sales_order(con, time_of_last_query)
 
