@@ -21,7 +21,6 @@ def get_fact_sales_order(con, time_of_last_query):
                 WHERE last_updated>{literal(time_of_last_query)};"""
         rows = con.run(query)
 
-
         fact_sales_order={'fact_sales_order':[]}
         for row in rows:
             data_point = {}
@@ -50,4 +49,4 @@ def get_fact_sales_order(con, time_of_last_query):
     
 
 if __name__ == "__main__":
-    get_fact_sales_order(None, datetime.datetime.now())
+    get_fact_sales_order(wr.postgresql.connect(secret_id = "totesys_db"), datetime.datetime.strptime('2024-02-15 10:32:09.709000', '%Y-%m-%d %H:%M:%S.%f'))

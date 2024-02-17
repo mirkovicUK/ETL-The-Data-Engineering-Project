@@ -47,7 +47,6 @@ def ingestion(event, context):
             )
 
 
-
     except InvalidConnection:
         logger.warning('Not pg8000 connection')
     except ParamValidationError as e:
@@ -70,7 +69,6 @@ def get_fact_sales_order(con, time_of_last_query):
         query = f"""SELECT * FROM {identifier(table)} 
                 WHERE last_updated>{literal(time_of_last_query)};"""
         rows = con.run(query)
-
 
         fact_sales_order={'fact_sales_order':[]}
         for row in rows:
@@ -97,8 +95,6 @@ def get_fact_sales_order(con, time_of_last_query):
     except Exception as e:
         logger.error(e)
         
-
-
 
 class InvalidConnection(Exception):
     """Traps error where db connection is not pg8000."""
