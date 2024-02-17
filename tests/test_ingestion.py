@@ -17,7 +17,7 @@ def test_ingestion_uses_pg8000_to_conect_to_DB(caplog):
 @pytest.mark.describe('ingestion()')
 @pytest.mark.it('loggs_if_incorect_db_credentials')
 @patch('src.ingestion.wr.postgresql')
-@patch('src.ingestion.DB_credentials')
+@patch('src.ingestion.DB')
 def test_ingestion_loggs_if_incorect_db_credentials(con, db, caplog):
     db = 'incorect secret'
     con.connect.return_value = list()
