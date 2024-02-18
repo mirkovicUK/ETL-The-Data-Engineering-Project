@@ -53,7 +53,7 @@ def ingestion(event, context):
         sales['sales'].append(get_fact_sales_order(con, time_of_last_query))
         sales['sales'].append(get_dim_location(con,time_of_last_query))
         sales['sales'].append(get_dim_staff(con, time_of_last_query))
-
+        sales['sales'].append(get_counterparty(con, time_of_last_query))
         con.close()
         put_object_into_s3_bucket(data=sales,
                                   bucket_name=INGESTION_BUCKET,
@@ -215,6 +215,57 @@ def get_dim_staff(con, time_of_last_query):
                     pass
             dim_staff['dim_staff'].append(data_point)
         return dim_staff
+    except Exception as e:
+        logger.error(e)
+
+
+def get_counterparty(con, time_of_last_query):
+    try:
+        query = f"""
+                SELECT 
+                    counterparty.counterparty_id,
+                    counterparty.counterparty_legal_name,
+                    address.address_line_1,
+                    address.address_line_2,
+                    address.district,
+                    address.city,
+                    address.postal_code,
+                    address.country,
+                    address.phone,
+                    counterparty.legal_address_id,
+                    counterparty.last_updated,
+                    address.address_id
+                FROM counterparty
+                LEFT JOIN address 
+                ON counterparty.legal_address_id = address.address_id
+                WHERE counterparty.last_updated > {literal(time_of_last_query)}
+                """
+        rows = con.run(query)
+        
+        dim_counterparty= {'dim_counterparty':[]}
+        for row in rows:
+            data_point={}
+            for ii, value in enumerate(row):
+                if ii==0:
+                    data_point['counterparty_id'] = value
+                if ii==1:
+                    data_point['counterparty_legal_name'] = value
+                if ii==2:
+                    data_point['counterparty_legal_address_line_1'] = value
+                if ii==3:
+                    data_point['counterparty_legal_address_line_2'] = value
+                if ii==4:
+                    data_point['counterparty_legal_district'] = value
+                if ii==5:
+                    data_point['counterparty_legal_city'] = value
+                if ii==6:
+                    data_point['counterparty_legal_postal_code'] = value
+                if ii==7:
+                    data_point['counterparty_legal_country'] = value
+                if ii==8:
+                    data_point['counterparty_legal_phone_number'] = value
+            dim_counterparty['dim_counterparty'].append(data_point)
+        return dim_counterparty
     except Exception as e:
         logger.error(e)
 
