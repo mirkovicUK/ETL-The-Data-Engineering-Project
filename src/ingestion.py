@@ -48,12 +48,20 @@ def ingestion(event, context):
         set_time_of_the_last_query(datetime.datetime.now())
         bucket_key = time_of_last_query.strftime('%Y-%m-%d-%H-%M-%S.%f')
 
-        fact_sales_order = get_fact_sales_order(con, time_of_last_query)
+        #get data  
+        sales={'sales':[]}
+        sales['sales'].append(get_fact_sales_order(con, time_of_last_query))
+        sales['sales'].append(get_dim_location(con,time_of_last_query))
+
 
         con.close()
 
-        put_object_into_s3_bucket(data=fact_sales_order,
-                                  bucket_name='ingestion-zone-895623xx35',
+        ###############################################
+        #ADD CHECKS FOR EMPTY DICT , NO DATA NO WRITINIG IN S3 <<<------ TOMOROW
+        #############################################
+        print(sales)
+        put_object_into_s3_bucket(data=sales,
+                                  bucket_name=INGESTION_BUCKET,
                                   key=bucket_key)
         
 
@@ -142,10 +150,35 @@ def get_fact_sales_order(con, time_of_last_query):
     except Exception as e:
         logger.error(e)
         
+def get_dim_location(con, time_of_last_query):
+    try:
+        table = 'address'
+        keys = ['address_id', 'address_line_1', 'address_line_2',
+                'district', 'city', 'postal_code', 'country', 'phone',
+                'created_at', 'last_updated']
+        query = f"""SELECT * FROM {identifier(table)} 
+                WHERE last_updated>{literal(time_of_last_query)};"""
+        rows = con.run(query)
+
+        dim_location={'dim_location':[]}
+        for row in rows:
+            data_point={}
+            for ii,(k,v) in enumerate(zip(keys,row)):
+                if ii==0:
+                    data_point['location_id'] = v
+                elif ii==8 or ii==9:
+                    pass
+                else:
+                    data_point[k] = v
+            dim_location['dim_location'].append(data_point)
+        return dim_location
+    except Exception as e:
+        logger.error(e)
+
 
 class InvalidConnection(Exception):
     """Traps error where db connection is not pg8000."""
     pass
 
 if __name__ == "__main__":
-    ingestion(None, None)
+    print(ingestion(None, None))
