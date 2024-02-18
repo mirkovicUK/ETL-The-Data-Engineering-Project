@@ -19,7 +19,7 @@ def get_dim_location(con, time_of_last_query):
     Returns:
         {'dim_location':[data_pooint1, data_point2...]}
     Raises:
-        KeyError: Does not raises an exception.
+        Does not raises an exception.
     Logs:
         Logs error to cloud watch 
     """

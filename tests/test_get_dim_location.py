@@ -59,7 +59,7 @@ def test_function_returns_dict_with_correct_key():
 
 
 @pytest.mark.describe('get_dim_location()')
-@pytest.mark.it('function returns data on corect keys')
+@pytest.mark.it('function returns data on correct keys')
 def test_ffunction_returns_data_on_correct_key():
     con = Mock()
     query = tuple([[29, '37736 Heathcote Lock', 'Noemy Pines', None,
