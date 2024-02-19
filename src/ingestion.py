@@ -48,19 +48,28 @@ def ingestion(event, context):
         set_time_of_the_last_query(datetime.datetime.now())
         bucket_key = time_of_last_query.strftime('%Y-%m-%d-%H-%M-%S.%f')
 
-        #get data  
+        #get data for sales schema
         sales={'sales':[]}
         sales['sales'].append(get_fact_sales_order(con, time_of_last_query))
         sales['sales'].append(get_dim_location(con,time_of_last_query))
         sales['sales'].append(get_dim_staff(con, time_of_last_query))
         sales['sales'].append(get_counterparty(con, time_of_last_query))
         sales['sales'].append(get_dim_currency(con, time_of_last_query))
+        sales['sales'].append(get_dim_design(con, time_of_last_query))
         con.close()
-        put_object_into_s3_bucket(data=sales,
+
+        #ingestion write only JSON with data
+        for table in sales['sales']:
+            for k,v in table.items():
+                if len(v)>0:
+                    put_object_into_s3_bucket(data=sales,
                                   bucket_name=INGESTION_BUCKET,
                                   key=bucket_key)
-        
-
+                    break
+            else:
+                continue
+            break
+                
     except InvalidConnection:
         logger.warning('Not pg8000 connection')
     except ParamValidationError as e:
@@ -299,6 +308,28 @@ def get_dim_currency(con, time_of_last_query):
         return dim_currency
     except Exception as e:
         logger.error(e)
+
+
+def get_dim_design(con, time_of_last_query):
+    try:
+        keys = ['design_id', 'design_name', 'file_location', 'file_name']
+        query =f"""
+                SELECT design_id, design_name, file_location, file_name
+                FROM design
+                WHERE last_updated > {literal(time_of_last_query)};
+                """
+        rows = con.run(query)
+
+        dim_design={'dim_design':[]}
+        for row in rows:
+            data_point={}
+            for k,v in zip(keys, row):
+                data_point[k]=v
+            dim_design['dim_design'].append(data_point)
+        return dim_design
+    except Exception as e:
+        logger.error(e)
+
 
 if __name__ == "__main__":
     print(ingestion(None, None))

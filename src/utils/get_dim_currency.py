@@ -17,7 +17,7 @@ def get_dim_currency(con, time_of_last_query):
         param1: pg8000 conection obj
         param2: time of last db query
     Returns:
-        {'counterparty':[data_pooint1, data_point2...]}
+        {'dim_currency':[data_pooint1, data_point2...]}
     Raises:
         Does not raises an exception.
     Logs:
