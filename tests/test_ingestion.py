@@ -33,3 +33,4 @@ def test_ingestion_write_only_JSON_with_data(con, put_obj_into_s3_bucket):
     con.connect.return_value = list()
     con.close.return_value = 'nothing'
     put_obj_into_s3_bucket.assert_not_called()
+

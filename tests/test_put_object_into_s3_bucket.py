@@ -5,6 +5,7 @@ import json
 
 from src.utils.put_object_into_s3_bucket import put_object_into_s3_bucket as put_s3
 
+
 @pytest.mark.describe('put_object_into_s3_bucket()')
 @pytest.mark.it('test function write into s3')
 @mock_aws

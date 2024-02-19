@@ -8,10 +8,30 @@ import datetime
 
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
-logger.info('THIS IS B4 EVERITHING')
+
+s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
+
+
 def json_to_parquet(event, context):
-    
+    """
+    Args:
+        param1: aws event obj
+        param2: aws context obj
+
+    Returns:
+        JSON object 
+
+    Raises:
+        RuntimeError
+
+    Logs:
+        InvalidConnection: logs warning to CloudWatch
+        ParamValidationError: logs error to CloudWatch
+        ClientError: logs error to CloudWatch
+
+    """    
     try:
+         
          
          s3_bucket_name, s3_object_name = get_object_path(event['Records'])
          logger.info(f'Bucket is {s3_bucket_name}')
@@ -21,19 +41,16 @@ def json_to_parquet(event, context):
                  raise InvalidFileTypeError 
 
          s3 = boto3.client('s3')
-         logger.info('THIS IS B4 GET TEXT FROM FILE')
          data_json = get_text_from_file(s3, s3_bucket_name, s3_object_name)
          json_data = json.loads(data_json)
-         logger.info('JSON DATA INSIDE LA')
          df = pd.DataFrame.from_records(json_data)
-         ct = datetime.datetime.now()
-         ts = str(ct.timestamp())
-         #Hard coded s3 bucket, change to new bucket name after every build
-         s3_url = 's3://processed-zone-895623xx35/' 
-         s3_url += ts +'.parquet' 
-         logger.info('B4 CALL TO_PARQUET')
+
+         bucket_key =datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S.%f')
+         s3_url = s3_procesed_zone_url
+         s3_url += bucket_key +'.parquet' 
+
          wr.s3.to_parquet(df=df, path=s3_url, index=False)
-         logger.info('JSON converted to parquet and logged to CloudWatch CHEEARS')
+         logger.info(f'JSON converted to parquet writen into {s3_bucket_name}')
          
     except KeyError as k:
         logger.error(f'Error retrieving data, {k}')
@@ -56,7 +73,6 @@ def json_to_parquet(event, context):
     
 
 def get_object_path(records):
-    """Extracts bucket and object references from Records field of event."""
     return records[0]['s3']['bucket']['name'], \
         records[0]['s3']['object']['key']
 
@@ -68,5 +84,5 @@ def get_text_from_file(client, bucket, object_key):
     return contents.decode('utf-8')
 
 class InvalidFileTypeError(Exception):
-    """Traps error where file type is not txt."""
+    """Traps error where file type is not .json"""
     pass

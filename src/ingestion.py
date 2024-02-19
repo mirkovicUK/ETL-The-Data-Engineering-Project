@@ -27,7 +27,8 @@ def ingestion(event, context):
         param2: aws context obj
 
     Returns:
-        JSON object 
+        None, 
+        write JSON object to s3
 
     Raises:
         RuntimeError
