@@ -54,6 +54,7 @@ def ingestion(event, context):
         sales['sales'].append(get_dim_location(con,time_of_last_query))
         sales['sales'].append(get_dim_staff(con, time_of_last_query))
         sales['sales'].append(get_counterparty(con, time_of_last_query))
+        sales['sales'].append(get_dim_currency(con, time_of_last_query))
         con.close()
         put_object_into_s3_bucket(data=sales,
                                   bucket_name=INGESTION_BUCKET,
@@ -269,6 +270,35 @@ def get_counterparty(con, time_of_last_query):
     except Exception as e:
         logger.error(e)
 
+
+def get_dim_currency(con, time_of_last_query):
+    try:
+        currency ={
+            'GBP' : 'British Pound',
+            'USD' : 'US Dollar',
+            'EUR' : 'Euro'
+        }
+        query =f"""
+                SELECT * FROM currency
+                WHERE last_updated > {literal(time_of_last_query)};
+                """
+        rows = con.run(query)
+
+        dim_currency = {'dim_currency':[]}
+        for row in rows:
+            data_point={}
+            for ii, v in enumerate(row):
+                if ii==0:
+                    data_point['currency_id'] = v
+                if ii==1:
+                    data_point['currency_code'] = v
+                    currency_name = currency[v]
+                if ii==2:
+                    data_point['currency_name'] = currency_name
+            dim_currency['dim_currency'].append(data_point) 
+        return dim_currency
+    except Exception as e:
+        logger.error(e)
 
 if __name__ == "__main__":
     print(ingestion(None, None))
