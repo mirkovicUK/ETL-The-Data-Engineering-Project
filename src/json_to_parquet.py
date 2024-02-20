@@ -41,7 +41,7 @@ def json_to_parquet(event, context):
         if s3_object_name[-4:] != 'json':
                 raise InvalidFileTypeError 
 
-        s3 = boto3.client('s3')
+        s3 = boto3.client('s3', region_name='eu-west-2')
         data_json = get_text_from_file(s3, s3_bucket_name, s3_object_name)
         json_data = json.loads(data_json)
         df = pd.DataFrame.from_records(json_data)
@@ -63,9 +63,9 @@ def json_to_parquet(event, context):
         else:
             raise
     except UnicodeError:
-        logger.error(f'File {s3_object_name} is not a valid text file')
+        logger.error(f'File {s3_object_name} is not a valid json file')
     except InvalidFileTypeError:
-        logger.error(f'File {s3_object_name} is not a valid text file')
+        logger.error(f'File {s3_object_name} is not a valid json file')
     except Exception as e:
         logger.error(e)
         raise RuntimeError
@@ -83,6 +83,7 @@ def get_text_from_file(client, bucket, object_key):
     data = client.get_object(Bucket=bucket, Key=object_key)
     contents = data['Body'].read()
     return contents.decode('utf-8')
+
 
 class InvalidFileTypeError(Exception):
     """Traps error where file type is not .json"""
