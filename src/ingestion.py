@@ -38,6 +38,8 @@ def ingestion(event, context):
         ParamValidationError: logs error to CloudWatch
         ClientError: logs error to CloudWatch
 
+    Lambda that query db and manipulate data,
+    write JSON into ingestion zone
     """
 
     try:

@@ -19,39 +19,40 @@ def json_to_parquet(event, context):
         param2: aws context obj
 
     Returns:
-        JSON object 
+        None 
 
     Raises:
         RuntimeError
+        UnicodeError
+        InvalidFileTypeError
+        KeyError
 
     Logs:
         InvalidConnection: logs warning to CloudWatch
         ParamValidationError: logs error to CloudWatch
         ClientError: logs error to CloudWatch
 
+    Lambda that's trigered with data obj landing in s3,
+    convert it to parquet and write to s3 bucket
     """    
     try:
-         
-         
-         s3_bucket_name, s3_object_name = get_object_path(event['Records'])
-         logger.info(f'Bucket is {s3_bucket_name}')
-         logger.info(f'Object key is {s3_object_name}')
 
-         if s3_object_name[-4:] != 'json':
-                 raise InvalidFileTypeError 
+        s3_bucket_name, s3_object_name = get_object_path(event['Records'])
+        if s3_object_name[-4:] != 'json':
+                raise InvalidFileTypeError 
 
-         s3 = boto3.client('s3')
-         data_json = get_text_from_file(s3, s3_bucket_name, s3_object_name)
-         json_data = json.loads(data_json)
-         df = pd.DataFrame.from_records(json_data)
+        s3 = boto3.client('s3')
+        data_json = get_text_from_file(s3, s3_bucket_name, s3_object_name)
+        json_data = json.loads(data_json)
+        df = pd.DataFrame.from_records(json_data)
 
-         bucket_key =datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S.%f')
-         s3_url = s3_procesed_zone_url
-         s3_url += bucket_key +'.parquet' 
+        bucket_key =datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S.%f')
+        s3_url = s3_procesed_zone_url
+        s3_url += bucket_key +'.parquet' 
 
-         wr.s3.to_parquet(df=df, path=s3_url, index=False)
-         logger.info(f'JSON converted to parquet writen into {s3_bucket_name}')
-         
+        wr.s3.to_parquet(df=df, path=s3_url, index=False)
+        logger.info(f'JSON converted to parquet writen into {s3_bucket_name}')
+
     except KeyError as k:
         logger.error(f'Error retrieving data, {k}')
     except ClientError as c:
