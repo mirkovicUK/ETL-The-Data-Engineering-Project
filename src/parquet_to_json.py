@@ -10,29 +10,21 @@ logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 logger.info('THIS IS B4 EVERITHING')
 
+s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
+
 def parquet_to_json(event, context):
-    
     try:
          
-         s3_bucket_name, s3_object_name = get_object_path(event['Records'])
-         logger.info(f'Bucket is {s3_bucket_name}')
-         logger.info(f'Object key is {s3_object_name}')
-
-         if s3_object_name[-7:] != 'parquet':
+         
+        s3_bucket_name, s3_object_name = get_object_path(event['Records'])
+        if s3_object_name[-7:] != 'parquet':
                  raise InvalidFileTypeError 
 
-         s3 = boto3.client('s3')
-         logger.info('THIS IS B4 GET TEXT FROM FILE')
-         df = wr.s3.read_parquet(path='s3://'+s3_bucket_name + '/'+s3_object_name)        
-         logger.info('Parquet DATA INSIDE LA')
-         ct = datetime.datetime.now()
-         ts = str(ct.timestamp())
-         s3_url = 's3://PROCESZONE/'
-         s3_url += ts +'.json' 
-         logger.info('B4 CALL TO_PARQUET')
-         json = df.to_json(orient="split")
-         logger.info(json)
-         logger.info('Parquet converted to json uploaded to s3 bucket CHEEARS')
+        s3 = boto3.client('s3')
+        df = wr.s3.read_parquet(path=s3_procesed_zone_url+s3_object_name)
+        json = df.to_json(orient="split")
+        logger.info(json)
+        logger.info('Parquet converted to json uploaded to s3 bucket CHEEARS')
          
     except KeyError as k:
         logger.error(f'Error retrieving data, {k}')
@@ -53,13 +45,11 @@ def parquet_to_json(event, context):
     
 
 def get_object_path(records):
-    """Extracts bucket and object references from Records field of event."""
     return records[0]['s3']['bucket']['name'], \
     records[0]['s3']['object']['key']
 
 
 def get_text_from_file(client, bucket, object_key):
-    """Reads text from specified file in S3."""
     data = client.get_object(Bucket=bucket, Key=object_key)
     contents = data['Body'].read()
     return contents.decode('utf-8')
