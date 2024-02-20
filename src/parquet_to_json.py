@@ -4,7 +4,8 @@ from botocore.exceptions import ClientError
 import json 
 import awswrangler as wr
 import pandas as pd
-import datetime 
+import datetime
+from awswrangler import exceptions
 
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
@@ -20,7 +21,7 @@ def parquet_to_json(event, context):
         if s3_object_name[-7:] != 'parquet':
                  raise InvalidFileTypeError 
 
-        s3 = boto3.client('s3')
+        s3 = boto3.client('s3', region_name='eu-west-2')
         df = wr.s3.read_parquet(path=s3_procesed_zone_url+s3_object_name)
         json = df.to_json(orient="split")
         logger.info(json)
@@ -35,10 +36,13 @@ def parquet_to_json(event, context):
             logger.error(f'No such bucket - {s3_bucket_name}')
         else:
             raise
+    except exceptions.NoFilesFound as e:
+        logger.error(e)
+        raise(e)
     except UnicodeError:
-        logger.error(f'File {s3_object_name} is not a valid text file')
+        logger.error(f'File {s3_object_name} is not a valid parquet file')
     except InvalidFileTypeError:
-        logger.error(f'File {s3_object_name} is not a valid text file')
+        logger.error(f'File {s3_object_name} is not a valid parquet file')
     except Exception as e:
         logger.error(e)
         raise RuntimeError

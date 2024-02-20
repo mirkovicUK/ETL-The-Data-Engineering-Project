@@ -1,11 +1,13 @@
 from src.ingestion import ingestion
 from unittest.mock import Mock, patch
 import pytest
-from src.json_to_parquet import json_to_parquet as jtp,  InvalidFileTypeError
 import logging
 from moto import mock_aws
 import boto3
 import json
+
+from src.json_to_parquet import json_to_parquet as jtp,  InvalidFileTypeError
+
 
 @pytest.mark.describe('json_to_parquet()')
 @pytest.mark.it('test function logs if it gets invalid file name')
