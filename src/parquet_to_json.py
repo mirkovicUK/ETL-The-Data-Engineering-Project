@@ -40,8 +40,8 @@ def parquet_to_json(event, context):
         #writing data
         write_dim_staff(con, json_obj['data'][2][0]['dim_staff'], last_update)
         write_dim_counterparty(con, json_obj['data'][3][0]['dim_counterparty'], last_update)
-
-        
+        write_dim_currency(con, json_obj['data'][4][0]['dim_currency'], last_update)
+        write_dim_design(con, json_obj['data'][5][0]['dim_design'], last_update)
 
         #write to db sales
         #write_to_dim_fact_sales_order(con, json['data'][0]['fact_sales_order'])
@@ -174,6 +174,57 @@ def write_dim_counterparty(con, data, updated=dt.now()):
         ON CONFLICT DO NOTHING;
         """ 
         con.run(dim_counterparty_query)
+
+
+def write_dim_currency(con, data, updated=dt.now()):
+    dim_currency_colums = ['currency_record_id', 'currency_id', 'currency_code', 
+                           'currency_name', 'last_updated_date', 'last_updated_time']
+    for data_point in data:
+        values = [
+            data_point['currency_id'],
+            data_point['currency_id'],
+            data_point['currency_code'],
+            data_point['currency_name'],
+            updated.date(),
+            updated.time()
+        ]
+        dim_courrency_query = f"""
+        INSERT INTO dim_currency
+        VALUES
+        ({literal(values[0])},{literal(values[1])},
+        {literal(values[2])},{literal(values[3])},
+        {literal(values[4])},{literal(values[5])})
+        ON CONFLICT DO NOTHING;
+        """ 
+        con.run(dim_courrency_query)
+
+
+def write_dim_design(con, data, updated=dt.now()):
+    dim_design_columns = [
+        'design_record_id', 'design_id', 'design_name', 'file_location', 
+        'file_name', 'last_updated_date', 'last_updated_time']
+    for data_point in data:
+        values = [
+            data_point['design_id'],
+            data_point['design_id'],
+            data_point['design_name'],
+            data_point['file_location'],
+            data_point['file_name'],
+            updated.date(),
+            updated.time()
+        ]
+    
+    
+        dim_design_query = f"""
+            INSERT INTO dim_design
+            VALUES
+            ({literal(values[0])},{literal(values[1])},
+            {literal(values[2])},{literal(values[3])},
+            {literal(values[4])},{literal(values[5])},
+            {literal(values[6])})
+            ON CONFLICT DO NOTHING;
+            """ 
+        con.run(dim_design_query)
 
 
 if __name__ == "__main__":

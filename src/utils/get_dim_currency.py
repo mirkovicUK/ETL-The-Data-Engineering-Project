@@ -31,7 +31,8 @@ def get_dim_currency(con, time_of_last_query):
         }
         query =f"""
                 SELECT * FROM currency
-                WHERE last_updated > {literal(time_of_last_query)};
+                WHERE last_updated > {literal(time_of_last_query)}
+                ;
                 """
         rows = con.run(query)
 

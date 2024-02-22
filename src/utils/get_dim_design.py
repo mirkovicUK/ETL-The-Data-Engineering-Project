@@ -28,7 +28,8 @@ def get_dim_design(con, time_of_last_query):
         query =f"""
                 SELECT design_id, design_name, file_location, file_name
                 FROM design
-                WHERE last_updated > {literal(time_of_last_query)};
+                WHERE last_updated > {literal(time_of_last_query)}
+                ;
                 """
         rows = con.run(query)
 
