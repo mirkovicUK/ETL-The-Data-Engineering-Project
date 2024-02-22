@@ -18,6 +18,6 @@ def test_shape():
             "sales_staff_id": 20,
             "unit_price": "3.47",
             "units_sold": 44148}]
-    con = wr.postgresql.connect(secret_id = 'DB_write')
-    write_fso(con, data)
-    con.close()
+#     con = wr.postgresql.connect(secret_id = 'DB_write')
+#     write_fso(con, data)
+#     con.close()
