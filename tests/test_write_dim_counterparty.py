@@ -19,12 +19,12 @@ def test_correct_data_is_written_to_DB():
         {'counterparty_id': 5, 'counterparty_legal_name': 'Frami, Yundt and Macejkovic', 'counterparty_legal_address_line_1': '364 Goodwin Streets', 'counterparty_legal_address_line_2': None, 'counterparty_legal_district': None, 'counterparty_legal_city': 'Sayreville', 'counterparty_legal_postal_code': '85544-4254', 'counterparty_legal_country': 'Svalbard & Jan Mayen Islands', 'counterparty_legal_phone_number': '0847 468066'}
     ]
 
-    secret = get_secret('DB_write')
-    con = Connection(secret['username'], 
-                    host = secret['host'],
-                    database = secret['dbname'],
-                    password = secret['password'])
-    #wdcp(con, data, dt.now() )
-    #rows = con.run("DELETE FROM dim_counterparty; ;")
-    rows = con.run("SELECT * FROM dim_counterparty ;")
-    print(*rows, '<----------dim_counterparty', sep='\n')
+    # secret = get_secret('DB_write')
+    # con = Connection(secret['username'], 
+    #                 host = secret['host'],
+    #                 database = secret['dbname'],
+    #                 password = secret['password'])
+    # wdcp(con, data, dt.now() )
+    # rows = con.run("DELETE FROM dim_counterparty; ;")
+    # rows = con.run("SELECT * FROM dim_counterparty ;")
+    # print(*rows, '<----------dim_counterparty', sep='\n')
