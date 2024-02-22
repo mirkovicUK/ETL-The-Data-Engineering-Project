@@ -69,6 +69,6 @@ def test_function_returns_data_on_correct_key():
     con.run.return_value=query
     time_of_last_query = datetime.datetime.strptime('2024-2-15 10:44:10.192011', '%Y-%m-%d %H:%M:%S.%f')
     data = get_staff(con, time_of_last_query)
-    keys = ['staff_id', 'first_name', 'last_name', 'department_name', 'location', 'email_address']
+    keys = ['staff_record_id', 'first_name', 'last_name', 'department_name', 'location', 'email_address']
     for x in keys:
         assert x in data['dim_staff'][0]
