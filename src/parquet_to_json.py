@@ -3,9 +3,9 @@ import boto3
 from botocore.exceptions import ClientError
 import json 
 import pandas as pd
-import datetime
-from awswrangler import exceptions
+from datetime import datetime as dt
 
+from awswrangler import exceptions
 import awswrangler as wr
 from awswrangler import _utils
 
@@ -32,13 +32,20 @@ def parquet_to_json(event, context):
         logger.info(json)
         logger.info('Parquet converted to json logget to CloudWatch')
 
-
-        con = wr.postgresql.connect(secret_id = DB)
+        secret = get_secret(DB)
+        con = Connection(secret['username'], host = secret['host'], 
+                         database = secret['dbname'],password = secret['password'])
         if not isinstance(con, pg8000.Connection):
             raise InvalidConnection()
         
+        last_update = dt.now()
+        #writing data
+        write_dim_staff(con, json['data'][2]['dim_staff'], last_update)
+        
+
         #write to db sales
         #write_to_dim_fact_sales_order(con, json['data'][0]['fact_sales_order'])
+        con.close()
          
     except KeyError as k:
         logger.error(f'Error retrieving data, {k}')
@@ -79,3 +86,53 @@ class InvalidFileTypeError(Exception):
 class InvalidConnection(Exception):
     """Traps error where db connection is not pg8000."""
     pass
+
+
+def write_dim_staff(con, data, updated=dt.now()):
+    dim_staf_column = ['staff_record_id', 'first_name', 'last_name', 'department_name',
+                           'location', 'email_address', 'last_updated_date', 'last_updated_time']
+    for data_point in data:
+        values = [
+            data_point['staff_record_id'],
+            data_point['staff_record_id'],
+            data_point['first_name'],
+            data_point['last_name'],
+            data_point['department_name'],
+            data_point['location'],
+            data_point['email_address'],
+            updated.date(),
+            updated.time()
+        ]
+
+        dim_staff_query = f"""
+        INSERT INTO dim_staff
+        VALUES
+        ({literal(values[0])},{literal(values[1])},
+        {literal(values[2])},{literal(values[3])},
+        {literal(values[4])},{literal(values[5])},
+        {literal(values[6])},{literal(values[7])},
+        {literal(values[8])})
+        ON CONFLICT DO NOTHING;
+        """ 
+        con.run(dim_staff_query)
+
+
+def get_secret(secret_name):
+    secret_name = secret_name
+    region_name = "eu-west-2"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+    service_name='secretsmanager',
+    region_name=region_name
+    )
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        raise e
+
+    secret = get_secret_value_response['SecretString']
+    return  json.loads(secret)

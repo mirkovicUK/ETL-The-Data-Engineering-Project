@@ -1,11 +1,18 @@
 import awswrangler as wr
 from awswrangler import _utils
 pg8000_native = _utils.import_optional_dependency("pg8000.native")
-from pg8000.native import literal, identifier, DatabaseError
+from pg8000.native import literal, identifier, DatabaseError, Connection
 from datetime import datetime as dt
 from decimal import Decimal
 import logging
 import math
+import json
+
+
+import boto3
+from botocore.exceptions import ClientError
+
+
 def proba(con):
 
 #dim_date
@@ -14,7 +21,7 @@ def proba(con):
                             'month_name', 'quarter', 'last_updated_date', 
                             'last_updated_time']
         updated = dt.now()
-        date2024_02_20 = dt.strptime("2024-02-20", '%Y-%m-%d').date()
+        date2024_02_20 = dt.strptime("2024-02-21", '%Y-%m-%d').date()
         dim_date_values  = [date2024_02_20,
                             date2024_02_20.year,
                             date2024_02_20.month,
@@ -27,7 +34,7 @@ def proba(con):
                             updated.time()
                             ]
         dim_date_query = f"""
-                    INSERT INTO dim_date 
+                    INSERT INTO project_team_5.dim_date 
                     ({identifier(dim_date_columns[0])},{identifier(dim_date_columns[1])},{identifier(dim_date_columns[2])},
                     {identifier(dim_date_columns[3])},{identifier(dim_date_columns[4])},{identifier(dim_date_columns[5])},
                     {identifier(dim_date_columns[6])},{identifier(dim_date_columns[7])},{identifier(dim_date_columns[8])},
@@ -37,7 +44,8 @@ def proba(con):
                     {literal(dim_date_values[3])},{literal(dim_date_values[4])},{literal(dim_date_values[5])},
                     {literal(dim_date_values[6])},{literal(dim_date_values[7])},{literal(dim_date_values[8])},
                     {literal(dim_date_values[9])})
-                    ;
+                    
+                    ON CONFLICT DO NOTHING;
                     """
 #dim_staff
 ##############################################################################
@@ -154,26 +162,57 @@ def proba(con):
         # rows = con.run("""SELECT *
         #     FROM information_schema.columns
         #     WHERE table_schema = 'project_team_5'
-        #     AND table_name   = 'dim_location';""")
+        #     AND table_name   = 'dim_staf';""")
+        # print('helooo')
         # print([row[3] for row in rows])
         
 
-        con.run(dim_date_query)
-        con.run(dim_staff_query)
-        con.run(dim_counterparty_query)
-        con.run(dim_currency_query)
-        con.run(dim_design_query)
-        con.run(dim_location_query)
-        con.run(fact_sales_order_query)
+        # con.run(dim_date_query)
+        # con.run(dim_staff_query)
+        # con.run(dim_counterparty_query)
+        # con.run(dim_currency_query)
+        # con.run(dim_design_query)
+        # con.run(dim_location_query)
+        # con.run(fact_sales_order_query)
         print()
-        print(con.run("SELECT * FROM dim_date;"), '<----------DIM_DATE')
-        print(con.run("SELECT * FROM fact_sales_order;"), '<----------FACT SALES ORDER')
-        print(con.run("SELECT * FROM dim_staff;"), '<----------DIM_STAFF')
-        print(con.run("SELECT * FROM dim_counterparty;"), '<----------DIM_COUNTERPARTY')
-        print(con.run("SELECT * FROM dim_currency;"), '<----------DIM_CURRENCY')
-        print(con.run("SELECT * FROM dim_design;"), '<----------DIM_Design')
-        print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION')
+        # print(con.run("SELECT * FROM project_team_5.dim_date;"), '<----------DIM_DATE')
+        # print(con.run("SELECT * FROM fact_sales_order;"), '<----------FACT SALES ORDER')
+        # print(con.run("SELECT * FROM dim_staff;"), '<----------DIM_STAFF')
+        # print(con.run("SELECT * FROM dim_counterparty;"), '<----------DIM_COUNTERPARTY')
+        # print(con.run("SELECT * FROM dim_currency;"), '<----------DIM_CURRENCY')
+        # print(con.run("SELECT * FROM dim_design;"), '<----------DIM_Design')
+        # print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION')
 
 
 if __name__ == "__main__":
-    print(proba(wr.postgresql.connect(secret_id = 'DB_write')))
+
+    def get_secret():
+
+        secret_name = "DB_write"
+        region_name = "eu-west-2"
+
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+        )
+        try:
+            get_secret_value_response = client.get_secret_value(
+                SecretId=secret_name
+            )
+        except ClientError as e:
+            raise e
+
+        secret = get_secret_value_response['SecretString']
+        return  json.loads(secret)
+
+    secret = get_secret()
+    con = Connection(secret['username'], 
+                    host = secret['host'],
+                    database = secret['dbname'],
+                    password = secret['password'])
+
+    # con = wr.postgresql.connect(secret_id = 'DB_write')
+
+    proba(con)

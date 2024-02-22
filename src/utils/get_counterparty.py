@@ -41,6 +41,7 @@ def get_counterparty(con, time_of_last_query):
                 LEFT JOIN address 
                 ON counterparty.legal_address_id = address.address_id
                 WHERE counterparty.last_updated > {literal(time_of_last_query)}
+               
                 """
         rows = con.run(query)
         

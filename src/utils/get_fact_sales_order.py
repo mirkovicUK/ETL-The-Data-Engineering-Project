@@ -63,5 +63,5 @@ def get_fact_sales_order(con, time_of_last_query):
     
 
 if __name__ == "__main__":
-    print(get_fact_sales_order(wr.postgresql.connect(secret_id = "totesys_db"), 
-                               datetime.datetime.strptime('2024-02-16 18:32:09.709000', '%Y-%m-%d %H:%M:%S.%f')))
+    print(*get_fact_sales_order(wr.postgresql.connect(secret_id = "totesys_db"), 
+                               datetime.datetime.strptime('0001-02-16 18:32:09.709000', '%Y-%m-%d %H:%M:%S.%f'))['fact_sales_order'], sep='\n')
