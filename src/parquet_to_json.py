@@ -28,21 +28,19 @@ def parquet_to_json(event, context):
 
         s3 = boto3.client('s3', region_name='eu-west-2')
         df = wr.s3.read_parquet(path=s3_procesed_zone_url+s3_object_name)
-        json = df.to_json(orient="split")
-        logger.info(json)
-        logger.info('Parquet converted to json logget to CloudWatch')
+        json_str = df.to_json(orient="split")
+        json_obj = json.loads(json_str)
 
         secret = get_secret(DB)
         con = Connection(secret['username'], host = secret['host'], 
                          database = secret['dbname'],password = secret['password'])
-        if not isinstance(con, pg8000.Connection):
-            raise InvalidConnection()
+        
         
         last_update = dt.now()
         #writing data
-        write_dim_staff(con, json['data'][2]['dim_staff'], last_update)
-        write_dim_counterparty(con, json['data'][3]['dim_counterparty'], last_update)
-        
+        write_dim_staff(con, json_obj['data'][2][0]['dim_staff'], last_update)
+        write_dim_counterparty(con, json_obj['data'][3][0]['dim_counterparty'], last_update)
+
         
 
         #write to db sales
@@ -176,3 +174,9 @@ def write_dim_counterparty(con, data, updated=dt.now()):
         ON CONFLICT DO NOTHING;
         """ 
         con.run(dim_counterparty_query)
+
+
+if __name__ == "__main__":
+        
+    event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'eu-west-2', 'eventTime': '2024-02-22T18:21:52.322Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AROAVRUVV7VBPFRJIPWUL:json_to_parquet_lambda'}, 'requestParameters': {'sourceIPAddress': '13.40.13.112'}, 'responseElements': {'x-amz-request-id': 'S0X52HRJ6KZVF6N6', 'x-amz-id-2': 'oiZ1hzwyd82P6ZqxEr7InxOBnxAHb8MDO05wbx8qqT/x3tA0lHyzmzy5zh0lum1XZQbejljwfQ7Di3ubJ3pyd7SmKC7EGOPo'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-20240215205827601100000009', 'bucket': {'name': 'processed-zone-895623xx35', 'ownerIdentity': {'principalId': 'AJQM6R72WQQXD'}, 'arn': 'arn:aws:s3:::processed-zone-895623xx35'}, 'object': {'key': '2024-02-22-18-21-48.776406.parquet', 'size': 302961, 'eTag': '2b63dfeaa14a411ad0108e19ea02c187', 'sequencer': '0065D790C03CE23C1A'}}}]}
+    print(parquet_to_json(event, None))

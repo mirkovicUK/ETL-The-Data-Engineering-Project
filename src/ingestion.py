@@ -213,7 +213,7 @@ def get_dim_staff(con, time_of_last_query):
             data_point={}
             for ii, value in enumerate(row):
                 if ii==0:
-                    data_point['staff_id'] = value
+                    data_point['staff_record_id'] = value
                 elif ii==1:
                     data_point['first_name'] = value
                 elif ii==2:
