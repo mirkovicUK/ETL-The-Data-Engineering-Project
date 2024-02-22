@@ -2,20 +2,25 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 import json 
-import awswrangler as wr
 import pandas as pd
 import datetime
 from awswrangler import exceptions
 
+import awswrangler as wr
+from awswrangler import _utils
+
+pg8000 = _utils.import_optional_dependency("pg8000")
+pg8000_native = _utils.import_optional_dependency("pg8000.native")
+from pg8000.native import Connection, literal, identifier, DatabaseError
+
+
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
-logger.info('THIS IS B4 EVERITHING')
 
 s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
-
+DB = 'DB_write'
 def parquet_to_json(event, context):
     try:
-         
          
         s3_bucket_name, s3_object_name = get_object_path(event['Records'])
         if s3_object_name[-7:] != 'parquet':
@@ -25,7 +30,15 @@ def parquet_to_json(event, context):
         df = wr.s3.read_parquet(path=s3_procesed_zone_url+s3_object_name)
         json = df.to_json(orient="split")
         logger.info(json)
-        logger.info('Parquet converted to json uploaded to s3 bucket CHEEARS')
+        logger.info('Parquet converted to json logget to CloudWatch')
+
+
+        con = wr.postgresql.connect(secret_id = DB)
+        if not isinstance(con, pg8000.Connection):
+            raise InvalidConnection()
+        
+        #write to db sales
+        #write_to_dim_fact_sales_order(con, json['data'][0]['fact_sales_order'])
          
     except KeyError as k:
         logger.error(f'Error retrieving data, {k}')
@@ -60,4 +73,9 @@ def get_text_from_file(client, bucket, object_key):
 
 class InvalidFileTypeError(Exception):
     """Traps error where file type is not txt."""
+    pass
+
+
+class InvalidConnection(Exception):
+    """Traps error where db connection is not pg8000."""
     pass
