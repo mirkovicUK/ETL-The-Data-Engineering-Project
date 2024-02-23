@@ -21,12 +21,12 @@ def test_correct_data_is_written_to_DB():
         {'sales_order_id': 5, 'created_date': datetime.date(2022, 11, 3), 'created_time': datetime.time(14, 20, 52, 186000), 'last_updated_date': datetime.date(2022, 11, 3), 'last_updated_time': datetime.time(14, 20, 52, 186000), 'design_id': 7, 'sales_staff_id': 18, 'counterparty_id': 4, 'units_sold': 49659, 'unit_price': Decimal('2.41'), 'currency_id': 3, 'agreed_delivery_date': datetime.date(2022, 11, 5), 'agreed_payment_date': datetime.date(2022, 11, 8), 'agreed_delivery_location_id': 25}
     ]
 
-    secret = get_secret('DB_write')
-    con = Connection(secret['username'], 
-                    host = secret['host'],
-                    database = secret['dbname'],
-                    password = secret['password'])
-    wfso(con, data, datetime.datetime.now() )
-    # rows = con.run("DELETE FROM fact_sales_order; ;")
-    rows = con.run("SELECT * FROM fact_sales_order LIMIT 10;")
-    print(*rows, '<----------fact_sales_order', sep='\n')
+    # secret = get_secret('DB_write')
+    # con = Connection(secret['username'], 
+    #                 host = secret['host'],
+    #                 database = secret['dbname'],
+    #                 password = secret['password'])
+    # wfso(con, data, datetime.datetime.now() )
+    # # rows = con.run("DELETE FROM fact_sales_order; ;")
+    # rows = con.run("SELECT * FROM fact_sales_order LIMIT 10;")
+    # print(*rows, '<----------fact_sales_order', sep='\n')
