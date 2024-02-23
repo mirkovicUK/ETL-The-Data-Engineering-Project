@@ -76,17 +76,6 @@ data "aws_iam_policy_document" "cw_document" {
     ]
   }
 
-  #allowe lamda to read parameter store
-  statement {
-
-    effect = "Allow"
-    actions = [ "ssm:GetParameter", "ssm:PutParameter" ]
-
-    resources = [
-       "arn:aws:ssm:eu-west-2:*:parameter/time"
-    ]
-  }
-
 }
 
 resource "aws_iam_policy" "cw_policy" {
@@ -99,4 +88,42 @@ resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
     policy_arn = aws_iam_policy.cw_policy.arn
 }
 
+resource "aws_iam_policy" "lambda_secrets_policy" {
+  name        = "LambdaSecretsPolicy"
+  description = "IAM policy for Lambda to access Secrets Manager"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = "secretsmanager:GetSecretValue"# the secret values stored on your aws account
+      Resource = "*"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_secrets_attachment" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.lambda_secrets_policy.arn
+}
+
+# allow lambda to access parameter store
+resource "aws_iam_policy" "lambda_ssm_policy" {
+  name        = "LambdaSSMPolicy"
+  description = "IAM policy for Lambda to access SSM parameters"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["ssm:GetParameter", "ssm:PutParameter"] 
+      Resource = "arn:aws:ssm:eu-west-2:*:parameter/time"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_ssm_attachment" {
+  role       =  aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.lambda_ssm_policy.arn
+}
 
