@@ -1,6 +1,7 @@
 import awswrangler as wr
 from awswrangler import _utils
 pg8000_native = _utils.import_optional_dependency("pg8000.native")
+pg8000 = _utils.import_optional_dependency("pg8000")
 from pg8000.native import literal, identifier, DatabaseError, Connection
 from datetime import datetime as dt
 from decimal import Decimal
@@ -156,14 +157,16 @@ def proba(con):
                     {literal(values[3])},{literal(values[4])},{literal(values[5])},
                     {literal(values[6])},{literal(values[7])},{literal(values[8])},
                     {literal(values[9])},{literal(values[10])},{literal(values[11])},
-                    {literal(values[12])},{literal(values[13])});"""
+                    {literal(values[12])},{literal(values[13])})
+                    ON CONFLICT DO NOTHING;"""
    
 #################################################################################
         # rows = con.run("""SELECT *
         #     FROM information_schema.columns
         #     WHERE table_schema = 'project_team_5'
-        #     AND table_name   = 'dim_staf';""")
+        #     AND table_name   = 'fact_sales_order';""")
         # print('helooo')
+        # #print(rows)
         # print([row[3] for row in rows])
         
 
@@ -181,7 +184,7 @@ def proba(con):
         # print(con.run("SELECT * FROM dim_counterparty;"), '<----------DIM_COUNTERPARTY')
         # print(con.run("SELECT * FROM dim_currency;"), '<----------DIM_CURRENCY')
         # print(con.run("SELECT * FROM dim_design;"), '<----------DIM_Design')
-        # print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION')
+        print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION')
 
 
 if __name__ == "__main__":
@@ -208,11 +211,11 @@ if __name__ == "__main__":
         return  json.loads(secret)
 
     secret = get_secret()
-    con = Connection(secret['username'], 
-                    host = secret['host'],
-                    database = secret['dbname'],
-                    password = secret['password'])
+    # con = Connection(secret['username'], 
+    #                 host = secret['host'],
+    #                 database = secret['dbname'],
+    #                 password = secret['password'])
 
-    # con = wr.postgresql.connect(secret_id = 'DB_write')
+    con = wr.postgresql.connect(secret_id = 'DB_write')
 
     proba(con)

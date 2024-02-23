@@ -44,9 +44,9 @@ def parquet_to_json(event, context):
         write_dim_counterparty(con, json_obj['data'][3][0]['dim_counterparty'], last_update)
         write_dim_currency(con, json_obj['data'][4][0]['dim_currency'], last_update)
         write_dim_design(con, json_obj['data'][5][0]['dim_design'], last_update)
+        write_dim_location(con, json_obj['data'][1][0]['dim_location'])
 
-        #write to db sales
-        #write_to_dim_fact_sales_order(con, json['data'][0]['fact_sales_order'])
+        
         con.close()
          
     except KeyError as k:
@@ -227,6 +227,41 @@ def write_dim_design(con, data, updated=dt.now()):
             ON CONFLICT DO NOTHING;
             """ 
         con.run(dim_design_query)
+
+
+def write_dim_location(con, data, updated=dt.now()):
+    dim_location_columns = [
+        'location_record_id', 'address_id', 'address_line_1', 
+        'address_line_2', 'district', 'city', 'postal_code', 
+        'country', 'phone', 'last_updated_date', 'last_updated_time']
+    
+    for data_point in data:
+        values = [
+            data_point['location_id'],
+            data_point['location_id'],
+            data_point['address_line_1'],
+            data_point['address_line_2'],
+            data_point['district'],
+            data_point['city'],
+            data_point['postal_code'],
+            data_point['country'],
+            data_point['phone'],
+            updated.date(),
+            updated.time()            
+        ]
+
+        dim_location_query = f"""
+            INSERT INTO dim_location
+            VALUES
+            ({literal(values[0])},{literal(values[1])},
+            {literal(values[2])},{literal(values[3])},
+            {literal(values[4])},{literal(values[5])},
+            {literal(values[6])},{literal(values[7])},
+            {literal(values[8])},{literal(values[9])},
+            {literal(values[10])})
+            ON CONFLICT DO NOTHING;
+            """ 
+        con.run(dim_location_query)
 
 
 if __name__ == "__main__":

@@ -32,7 +32,8 @@ def get_fact_sales_order(con, time_of_last_query):
                 'agreed_payment_date', 'agreed_delivery_location_id']
 
         query = f"""SELECT * FROM {identifier(table)} 
-                WHERE last_updated>{literal(time_of_last_query)};"""
+                WHERE last_updated>{literal(time_of_last_query)}
+                ;"""
         rows = con.run(query)
 
         fact_sales_order={'fact_sales_order':[]}
