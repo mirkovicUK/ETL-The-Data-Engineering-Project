@@ -17,8 +17,20 @@ from pg8000.native import Connection, literal, identifier, DatabaseError
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 
-s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
-DB = 'DB_write'
+def read_processed_bucket_name():
+    s3 = boto3.client('s3')
+    bucket_name = "terraform-12345" 
+    object_key = "tf-state"   
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+    data = json.loads(response['Body'].read().decode('utf-8'))
+    processed_bucket_name = data["outputs"]["parquet_bucket"]["value"]
+           
+    return f's3://{processed_bucket_name}'
+
+s3_procesed_zone_url = read_processed_bucket_name()
+
+DB = 'data_warehouse'
+
 def parquet_to_json(event, context):
     try:
          

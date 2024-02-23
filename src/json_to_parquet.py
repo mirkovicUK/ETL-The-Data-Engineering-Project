@@ -9,7 +9,20 @@ import datetime
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 
-s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
+def read_processed_bucket_name():
+    s3 = boto3.client('s3')
+    bucket_name = "terraform-12345" 
+    object_key = "tf-state"   
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+    data = json.loads(response['Body'].read().decode('utf-8'))
+    processed_bucket_name = data["outputs"]["parquet_bucket"]["value"]
+           
+    return f's3://{processed_bucket_name}'
+
+
+
+s3_procesed_zone_url = read_processed_bucket_name()
+
 
 
 def json_to_parquet(event, context):

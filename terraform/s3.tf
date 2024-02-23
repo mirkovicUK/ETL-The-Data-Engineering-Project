@@ -1,15 +1,32 @@
 
+# resource "aws_s3_bucket" "parquet_bucket" {
+#   bucket = "processed-zone-895623xx35"
+#   force_destroy = true
+# }
+
+# resource "aws_s3_bucket" "json_bucket" {
+#   bucket = "ingestion-zone-895623xx35"
+#   force_destroy = true
+# }
+
+# new bucket system ######################################################
 resource "aws_s3_bucket" "parquet_bucket" {
-  bucket = "processed-zone-895623xx35"
+  bucket_prefix = "processed-zone-the-beekeepers-"
   force_destroy = true
 }
 
 resource "aws_s3_bucket" "json_bucket" {
-  bucket = "ingestion-zone-895623xx35"
+  bucket_prefix = "ingestion-zone-the-beekeepers-"
   force_destroy = true
 }
 
-
+output "ingested_bucket" {
+  value = aws_s3_bucket.json_bucket.id
+}
+output "parquet_bucket" {
+  value = aws_s3_bucket.parquet_bucket.id
+}
+######################################################################
 resource "aws_s3_bucket_notification" "json_bucket_notification" {
   bucket = aws_s3_bucket.json_bucket.id
 

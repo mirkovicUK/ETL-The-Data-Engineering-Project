@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "cw_document" {
     actions = [ "ssm:GetParameter", "ssm:PutParameter" ]
 
     resources = [
-       "arn:aws:ssm:eu-west-2:381492264258:parameter/time"
+       "arn:aws:ssm:eu-west-2:*:parameter/time"
     ]
   }
 
