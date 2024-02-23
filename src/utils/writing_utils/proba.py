@@ -178,13 +178,13 @@ def proba(con):
         # con.run(dim_location_query)
         # con.run(fact_sales_order_query)
         print()
-        # print(con.run("SELECT * FROM project_team_5.dim_date;"), '<----------DIM_DATE')
-        # print(*con.run("SELECT * FROM fact_sales_order;"), '<----------FACT SALES ORDER', sep='\n')
-        # print(con.run("SELECT * FROM dim_staff;"), '<----------DIM_STAFF')
-        # print(con.run("SELECT * FROM dim_counterparty;"), '<----------DIM_COUNTERPARTY')
-        # print(con.run("SELECT * FROM dim_currency;"), '<----------DIM_CURRENCY')
-        # print(con.run("SELECT * FROM dim_design;"), '<----------DIM_Design')
-        # print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION')
+        print(len(con.run("SELECT * FROM project_team_5.dim_date;")), '<----------DIM_DATE')
+        print(len(con.run("SELECT * FROM fact_sales_order;")), '<----------FACT SALES ORDER')
+        print(len(con.run("SELECT * FROM dim_staff;")), '<----------DIM_STAFF')
+        print(len(con.run("SELECT * FROM dim_counterparty;")), '<----------DIM_COUNTERPARTY')
+        print(len(con.run("SELECT * FROM dim_currency;")), '<----------DIM_CURRENCY')
+        print(len(con.run("SELECT * FROM dim_design;")), '<----------DIM_Design')
+        print(len(con.run("SELECT * FROM dim_location ;")), '<----------DIM_LOCATION')
 
 
 if __name__ == "__main__":

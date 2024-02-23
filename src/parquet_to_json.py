@@ -28,7 +28,7 @@ def parquet_to_json(event, context):
         if s3_object_name[-7:] != 'parquet':
                  raise InvalidFileTypeError 
 
-        s3 = boto3.client('s3', region_name='eu-west-2')
+        
         df = wr.s3.read_parquet(path=s3_procesed_zone_url+s3_object_name)
         json_str = df.to_json(orient="split")
         json_obj = json.loads(json_str)
