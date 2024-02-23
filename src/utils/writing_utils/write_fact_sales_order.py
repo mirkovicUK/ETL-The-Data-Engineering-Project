@@ -46,5 +46,4 @@ def write_fact_sales_order(con, data, updated=dt.now()):
             {literal(values[9])},{literal(values[10])},{literal(values[11])},
             {literal(values[12])},{literal(values[13])},{literal(values[14])})
             ON CONFLICT DO NOTHING;"""
-        print(fact_sales_order_query)
         con.run(fact_sales_order_query)

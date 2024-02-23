@@ -27,6 +27,6 @@ def test_correct_data_is_written_to_DB():
     #                 database = secret['dbname'],
     #                 password = secret['password'])
     # wfso(con, data, datetime.datetime.now() )
-    # # rows = con.run("DELETE FROM fact_sales_order; ;")
+    # rows = con.run("DELETE FROM fact_sales_order; ;")
     # rows = con.run("SELECT * FROM fact_sales_order LIMIT 10;")
     # print(*rows, '<----------fact_sales_order', sep='\n')
