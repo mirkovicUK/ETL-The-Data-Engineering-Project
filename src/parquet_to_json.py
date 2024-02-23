@@ -19,6 +19,8 @@ logger.setLevel(logging.INFO)
 
 s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
 DB = 'DB_write'
+
+
 def parquet_to_json(event, context):
     try:
          
