@@ -69,4 +69,4 @@ resource "aws_lambda_permission" "allow_scheduler" {
 resource "aws_cloudwatch_event_target" "lambda_target" {
   rule      = aws_cloudwatch_event_rule.scheduler.name
   arn       = aws_lambda_function.dummy_lambda.arn
-}
+} 
