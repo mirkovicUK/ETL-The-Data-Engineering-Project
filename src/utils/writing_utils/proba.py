@@ -211,11 +211,11 @@ if __name__ == "__main__":
         return  json.loads(secret)
 
     secret = get_secret()
-    con = Connection(secret['username'], 
-                    host = secret['host'],
-                    database = secret['dbname'],
-                    password = secret['password'])
+    # con = Connection(secret['username'], 
+    #                 host = secret['host'],
+    #                 database = secret['dbname'],
+    #                 password = secret['password'])
 
-    # con = wr.postgresql.connect(secret_id = 'DB_write')
+    con = wr.postgresql.connect(secret_id = 'DB_write')
 
     proba(con)
