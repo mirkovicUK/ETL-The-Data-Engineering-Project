@@ -45,6 +45,7 @@ def parquet_to_json(event, context):
         write_dim_location(con, json_obj['data'][1][0]['dim_location'])
         write_fact_sales_order(con, json_obj['data'][0][0]['fact_sales_order'], last_update)
         con.close()
+        logger.info('data transfer successfully')
          
     except KeyError as k:
         logger.error(f'Error retrieving data, {k}')
