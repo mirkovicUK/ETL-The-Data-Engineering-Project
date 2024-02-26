@@ -25,7 +25,7 @@ def read_processed_bucket_name():
     data = json.loads(response['Body'].read().decode('utf-8'))
     processed_bucket_name = data["outputs"]["parquet_bucket"]["value"]
            
-    return f's3://{processed_bucket_name}'
+    return f's3://{processed_bucket_name}/'
 
 s3_procesed_zone_url = read_processed_bucket_name()
 
