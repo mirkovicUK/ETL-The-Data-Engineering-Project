@@ -80,7 +80,7 @@ def ingestion(event, context):
                 if len(v)>0:
                     put_object_into_s3_bucket(data=sales,
                                   bucket_name=INGESTION_BUCKET,
-                                  key=bucket_key)
+                                  key=bucket_key + f'_{k}')#added  + f'_{table_name}'
                     break
             else:
                 continue

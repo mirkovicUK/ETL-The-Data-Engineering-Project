@@ -129,6 +129,248 @@ resource "aws_cloudwatch_metric_alarm" "RuntimeError_error_alarm" {
   alarm_description   = "resource not found"
 }
 
+# InvalidConnection error##############################################################################################
+resource "aws_cloudwatch_log_metric_filter" "InvalidConnection_error_dummy_lambda" {
+  name           = "InvalidConnection_error"
+  pattern        = "InvalidConnection" #string to search for
+  log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
+  metric_transformation {
+    name      = "InvalidConnectionErrorCount"
+    namespace = "InvalidConnectionLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "InvalidConnection_error_json_to_parquet_lambda" {
+  name           = "InvalidConnection_error"
+  pattern        = "InvalidConnection" #string to search for
+  log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
+  metric_transformation {
+    name      = "InvalidConnectionErrorCount"
+    namespace = "InvalidConnectionLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "InvalidConnection_error_parquet_to_json_lambda" {
+  name           = "InvalidConnection_error"
+  pattern        = "InvalidConnection" #string to search for
+  log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
+  metric_transformation {
+    name      = "InvalidConnectionErrorCount"
+    namespace = "InvalidConnectionLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "InvalidConnection_error_alarm" {
+  alarm_name          = "InvalidConnection_error_alarm" 
+  metric_name         = "InvalidConnectionErrorCount" # must match metric transformation name
+  evaluation_periods  = 1
+  period              = 10
+  threshold           = 1
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "InvalidConnectionLambdaLoadMetrics" #must match metric transformation namespace
+  alarm_actions       = [aws_sns_topic.error_alerts.arn]
+  alarm_description   = "Cant connect to DB"
+}
+
+
+# ParamValidationError error##############################################################################################
+resource "aws_cloudwatch_log_metric_filter" "ParamValidationError_error_dummy_lambda" {
+  name           = "ParamValidationError_error"
+  pattern        = "ParamValidationError" #string to search for
+  log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
+  metric_transformation {
+    name      = "ParamValidationErrorErrorCount"
+    namespace = "ParamValidationErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "ParamValidationError_error_json_to_parquet_lambda" {
+  name           = "ParamValidationError_error"
+  pattern        = "ParamValidationError" #string to search for
+  log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
+  metric_transformation {
+    name      = "ParamValidationErrorErrorCount"
+    namespace = "ParamValidationErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "ParamValidationError_error_parquet_to_json_lambda" {
+  name           = "ParamValidationError_error"
+  pattern        = "ParamValidationError" #string to search for
+  log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
+  metric_transformation {
+    name      = "ParamValidationErrorErrorCount"
+    namespace = "ParamValidationErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "ParamValidationError_error_alarm" {
+  alarm_name          = "ParamValidationError_error_alarm" 
+  metric_name         = "ParamValidationErrorErrorCount" # must match metric transformation name
+  evaluation_periods  = 1
+  period              = 10
+  threshold           = 1
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "ParamValidationErrorLambdaLoadMetrics" #must match metric transformation namespace
+  alarm_actions       = [aws_sns_topic.error_alerts.arn]
+  alarm_description   = "parameter doesn't exist"
+}
+
+# ClientError error##############################################################################################
+resource "aws_cloudwatch_log_metric_filter" "ClientError_error_dummy_lambda" {
+  name           = "ClientError_error"
+  pattern        = "ClientError" #string to search for
+  log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
+  metric_transformation {
+    name      = "ClientErrorErrorCount"
+    namespace = "ClientErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "ClientError_error_json_to_parquet_lambda" {
+  name           = "ClientError_error"
+  pattern        = "ClientError" #string to search for
+  log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
+  metric_transformation {
+    name      = "ClientErrorErrorCount"
+    namespace = "ClientErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "ClientError_error_parquet_to_json_lambda" {
+  name           = "ClientError_error"
+  pattern        = "ClientError" #string to search for
+  log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
+  metric_transformation {
+    name      = "ClientErrorErrorCount"
+    namespace = "ClientErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "ClientError_error_alarm" {
+  alarm_name          = "ClientError_error_alarm" 
+  metric_name         = "ClientErrorErrorCount" # must match metric transformation name
+  evaluation_periods  = 1
+  period              = 10
+  threshold           = 1
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "ClientErrorLambdaLoadMetrics" #must match metric transformation namespace
+  alarm_actions       = [aws_sns_topic.error_alerts.arn]
+  alarm_description   = "No such key or bucket"
+}
+
+# UnicodeError error##############################################################################################
+resource "aws_cloudwatch_log_metric_filter" "UnicodeError_error_dummy_lambda" {
+  name           = "UnicodeError_error"
+  pattern        = "UnicodeError" #string to search for
+  log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
+  metric_transformation {
+    name      = "UnicodeErrorErrorCount"
+    namespace = "UnicodeErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "UnicodeError_error_json_to_parquet_lambda" {
+  name           = "UnicodeError_error"
+  pattern        = "UnicodeError" #string to search for
+  log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
+  metric_transformation {
+    name      = "UnicodeErrorErrorCount"
+    namespace = "UnicodeErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "UnicodeError_error_parquet_to_json_lambda" {
+  name           = "UnicodeError_error"
+  pattern        = "UnicodeError" #string to search for
+  log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
+  metric_transformation {
+    name      = "UnicodeErrorErrorCount"
+    namespace = "UnicodeErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "UnicodeError_error_alarm" {
+  alarm_name          = "UnicodeError_error_alarm" 
+  metric_name         = "UnicodeErrorErrorCount" # must match metric transformation name
+  evaluation_periods  = 1
+  period              = 10
+  threshold           = 1
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "UnicodeErrorLambdaLoadMetrics" #must match metric transformation namespace
+  alarm_actions       = [aws_sns_topic.error_alerts.arn]
+  alarm_description   = "Not valid json, txt or parquet file"
+}
+
+# InvalidFileTypeError error##############################################################################################
+resource "aws_cloudwatch_log_metric_filter" "InvalidFileTypeError_error_dummy_lambda" {
+  name           = "InvalidFileTypeError_error"
+  pattern        = "InvalidFileTypeError" #string to search for
+  log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
+  metric_transformation {
+    name      = "InvalidFileTypeErrorErrorCount"
+    namespace = "InvalidFileTypeErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "InvalidFileTypeError_error_json_to_parquet_lambda" {
+  name           = "InvalidFileTypeError_error"
+  pattern        = "InvalidFileTypeError" #string to search for
+  log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
+  metric_transformation {
+    name      = "InvalidFileTypeErrorErrorCount"
+    namespace = "InvalidFileTypeErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "InvalidFileTypeError_error_parquet_to_json_lambda" {
+  name           = "InvalidFileTypeError_error"
+  pattern        = "InvalidFileTypeError" #string to search for
+  log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
+  metric_transformation {
+    name      = "InvalidFileTypeErrorErrorCount"
+    namespace = "InvalidFileTypeErrorLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "InvalidFileTypeError_error_alarm" {
+  alarm_name          = "InvalidFileTypeError_error_alarm" 
+  metric_name         = "InvalidFileTypeErrorErrorCount" # must match metric transformation name
+  evaluation_periods  = 1
+  period              = 10
+  threshold           = 1
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "InvalidFileTypeErrorLambdaLoadMetrics" #must match metric transformation namespace
+  alarm_actions       = [aws_sns_topic.error_alerts.arn]
+  alarm_description   = "Not valid json, txt or parquet file"
+}
+
+
 # resource "aws_cloudwatch_log_metric_filter" "pg8000_error" {
 #   name           = "pg8000 error"
 #   pattern        = "Not pg8000 connection"
