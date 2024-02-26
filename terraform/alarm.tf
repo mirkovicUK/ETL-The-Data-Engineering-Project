@@ -8,7 +8,9 @@ resource "aws_sns_topic_subscription" "email_subscription" {
   endpoint  = "beekeepers_error_log@mail.com"
   
 }
-resource "aws_cloudwatch_log_metric_filter" "AccessDeniedException_error" {
+
+#AccessDeniedException (cloudwatch error, not related to functions)#############################################
+resource "aws_cloudwatch_log_metric_filter" "AccessDeniedException_error_dummy_lambda" {
   name           = "AccessDeniedException_error"
   pattern        = "AccessDeniedException" #string to search for
   log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
@@ -29,7 +31,54 @@ resource "aws_cloudwatch_metric_alarm" "AccessDeniedException_error_alarm" {
   comparison_operator = "GreaterThanOrEqualToThreshold"
   namespace           = "AccessDeniedExceptionLambdaLoadMetrics" #must match metric transformation namespace
   alarm_actions       = [aws_sns_topic.error_alerts.arn]
-  alarm_description   = "access denied"
+  alarm_description   = "Access denied cannot access secret value"
+}
+# exception error##############################################################################################
+resource "aws_cloudwatch_log_metric_filter" "Exception_error_dummy_lambda" {
+  name           = "Exception_error"
+  pattern        = "Exception" #string to search for
+  log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
+  metric_transformation {
+    name      = "ExceptionErrorCount"
+    namespace = "ExceptionLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "Exception_error_json_to_parquet_lambda" {
+  name           = "Exception_error"
+  pattern        = "Exception" #string to search for
+  log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
+  metric_transformation {
+    name      = "ExceptionErrorCount"
+    namespace = "ExceptionLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "Exception_error_parquet_to_json_lambda" {
+  name           = "Exception_error"
+  pattern        = "Exception" #string to search for
+  log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
+  metric_transformation {
+    name      = "ExceptionErrorCount"
+    namespace = "ExceptionLambdaLoadMetrics"
+    value     = "1"
+  }
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "Exception_error_alarm" {
+  alarm_name          = "Exception_error_alarm" 
+  metric_name         = "ExceptionErrorCount" # must match metric transformation name
+  evaluation_periods  = 1
+  period              = 10
+  threshold           = 1
+  statistic           = "Sum"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "ExceptionLambdaLoadMetrics" #must match metric transformation namespace
+  alarm_actions       = [aws_sns_topic.error_alerts.arn]
+  alarm_description   = "Check input"
 }
 
 # resource "aws_cloudwatch_log_metric_filter" "pg8000_error" {

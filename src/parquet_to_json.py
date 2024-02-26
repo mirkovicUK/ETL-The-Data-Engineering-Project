@@ -28,7 +28,7 @@ def read_processed_bucket_name():
     return f's3://{processed_bucket_name}'
 
 s3_procesed_zone_url = read_processed_bucket_name()
-
+logger.info("Exception")
 DB = 'data_warehouse'
 
 def parquet_to_json(event, context):

@@ -22,7 +22,7 @@ def read_processed_bucket_name():
 
 
 s3_procesed_zone_url = read_processed_bucket_name()
-
+logger.info("Exception")
 
 
 def json_to_parquet(event, context):
