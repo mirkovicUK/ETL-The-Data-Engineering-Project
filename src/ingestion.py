@@ -17,7 +17,7 @@ from pg8000.native import Connection, literal, identifier, DatabaseError
 
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
-logger.info("Exception")
+
 DB = "new_tote"
 
 

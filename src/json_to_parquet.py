@@ -32,7 +32,7 @@ INGESTION_BUCKET = read_ingested_bucket_name()
 s3_bucket_name= INGESTION_BUCKET
 
 s3_procesed_zone_url = read_processed_bucket_name()
-logger.info("Exception")
+
 
 
 def json_to_parquet(event, context):

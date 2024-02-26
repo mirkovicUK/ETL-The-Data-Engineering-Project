@@ -45,7 +45,7 @@ INGESTION_BUCKET = read_ingested_bucket_name()
 s3_bucket_name= INGESTION_BUCKET
 
 
-logger.info("Exception")
+
 DB = 'data_warehouse'
 
 def parquet_to_json(event, context):
