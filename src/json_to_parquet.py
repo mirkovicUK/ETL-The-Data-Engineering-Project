@@ -19,6 +19,7 @@ def read_processed_bucket_name():
            
     return f's3://{processed_bucket_name}'
 
+
 # def read_ingested_bucket_name():
 #     s3 = boto3.client('s3')
 #     bucket_name = "terraform-12345" 
@@ -32,11 +33,12 @@ def read_processed_bucket_name():
 # s3_bucket_name= INGESTION_BUCKET
 
 s3_procesed_zone_url = read_processed_bucket_name() 
-print(s3_procesed_zone_url)
+
 
 
 
 def json_to_parquet(event, context):
+    logger.info(event)
     """
     Args:
         param1: aws event obj
