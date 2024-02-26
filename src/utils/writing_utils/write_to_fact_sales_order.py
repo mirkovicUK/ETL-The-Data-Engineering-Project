@@ -194,7 +194,7 @@ def write_to_fact_sales_order(con, data):
     print(con.run("SELECT * FROM dim_counterparty;"), '<----------DIM_COUNTERPARTY')
     print(con.run("SELECT * FROM dim_currency;"), '<----------DIM_CURRENCY')
     print(con.run("SELECT * FROM dim_design;"), '<----------DIM_Design')
-    print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION')
+    print(con.run("SELECT * FROM dim_location ;"), '<----------DIM_LOCATION') 
 
 
 

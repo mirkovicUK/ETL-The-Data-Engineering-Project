@@ -19,5 +19,6 @@ def test_shape():
             "unit_price": "3.47",
             "units_sold": 44148}]
     con = wr.postgresql.connect(secret_id = 'data_warehouse')
+    
     write_fso(con, data)
     con.close()

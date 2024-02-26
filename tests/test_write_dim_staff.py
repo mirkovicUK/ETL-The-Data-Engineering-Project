@@ -7,7 +7,7 @@ import pytest
 from awswrangler import _utils
 pg8000 = _utils.import_optional_dependency("pg8000")
 
-@pytest.mark.skip
+# @pytest.mark.skip
 @pytest.mark.describe('write_dim_staff()')
 @pytest.mark.it('correct_data_is_written_to_DB')
 def test_correct_data_is_written_to_DB():
@@ -18,12 +18,12 @@ def test_correct_data_is_written_to_DB():
         {'staff_record_id': 4, 'first_name': 'Ana', 'last_name': 'Glover', 'department_name': 'Production', 'location': 'Leeds', 'email_address': 'ana.glover@terrifictotes.com'},
         {'staff_record_id': 5, 'first_name': 'Magdalena', 'last_name': 'Zieme', 'department_name': 'HR', 'location': 'Leeds', 'email_address': 'magdalena.zieme@terrifictotes.com'}
     ]
-    secret = get_secret('new_tote')
+    secret = get_secret('data_warehouse')
     con = Connection(secret['username'],
                     host = secret['host'],
                     database = secret['dbname'],
                     password = secret['password'])
     wds(con, data, dt.now() )
-    rows = con.run("DELETE FROM dim_staff; ;")
+    # rows = con.run("DELETE FROM dim_staff; ;")
     rows = con.run("SELECT * FROM dim_staff ;")
     print(*rows, '<----------DIM_STAFF', sep='\n')
