@@ -51,7 +51,7 @@ safety:
 ## Install flake8
 flake:
 	$(call execute_in_env, $(PIP) install flake8)
-
+ 
 ## Install coverage
 coverage:
 	$(call execute_in_env, $(PIP) install coverage)
