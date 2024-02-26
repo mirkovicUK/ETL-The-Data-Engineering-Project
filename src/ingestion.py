@@ -30,8 +30,8 @@ def read_ingested_bucket_name():
     ingested_bucket_name = data["outputs"]["ingested_bucket"]["value"]
            
     return ingested_bucket_name
-
 INGESTION_BUCKET = read_ingested_bucket_name()
+bucket_name= INGESTION_BUCKET
 
 def ingestion(event, context):
     """

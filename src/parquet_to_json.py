@@ -28,6 +28,23 @@ def read_processed_bucket_name():
     return f's3://{processed_bucket_name}'
 
 s3_procesed_zone_url = read_processed_bucket_name()
+
+
+
+
+def read_ingested_bucket_name():
+    s3 = boto3.client('s3')
+    bucket_name = "terraform-12345" 
+    object_key = "tf-state"   
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+    data = json.loads(response['Body'].read().decode('utf-8'))
+    ingested_bucket_name = data["outputs"]["ingested_bucket"]["value"]
+           
+    return ingested_bucket_name
+INGESTION_BUCKET = read_ingested_bucket_name()
+s3_bucket_name= INGESTION_BUCKET
+
+
 logger.info("Exception")
 DB = 'data_warehouse'
 
