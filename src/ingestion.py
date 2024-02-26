@@ -4,6 +4,7 @@ import boto3
 from botocore.exceptions import ClientError, ParamValidationError
 import json 
 import datetime 
+import time
 from decimal import Decimal
 
 import awswrangler as wr
@@ -349,3 +350,5 @@ def get_dim_design(con, time_of_last_query):
 
 if __name__ == "__main__":
     print(ingestion(None, None))
+    # print(get_time_of_last_query(),'get')
+    # set_time_of_the_last_query(datetime.datetime(2020, 2, 20, 18, 14, 14))
