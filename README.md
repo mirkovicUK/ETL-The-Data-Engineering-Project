@@ -140,13 +140,26 @@ Above all, don't rush: it will be better to deliver a high-quality MVP than a mo
 
 Enjoy this! And good luck!
 
-stuff that needs doing in AWS
-1. make a tf state S3 bucket (on the AWS website) and type name of it into read_ingested_bucket_name() in ingestion.py under bucket_name variable
+## Actions that need doing in AWS (directly on the website)
+1. make a tf state S3 bucket (on the AWS website) 
 2. make a user with full admin access and note the access key and secret access key
-3. make secret named 'new_tote' containing the log in info for the database containing all the raw information
+3. make secret named 'new_tote' containing the log in info for the database containing all the raw information to be read
+4. make another secret named 'data_warehouse' containing the log in info for the database to be written to
 
-stuff that needs doing on github.com
-1. make a new secret on https://github.com/<'your github username'>/<'your project name'>/settings/secrets/actions and name them
+(when making the 'new_tote' and 'data_warehouse' secrets you must choose 'Credentials for other databases" option and then 'postgreSQL' as database type, type in credentials and leave all other options default)
+
+## actions that need doing on github.com
+1. make a new secret on "https://github.com/<'your github username'>/<'your project name'>/settings/secrets/actions" and name them
 AWS_ACCESS_KEY and AWS_SECRET, put the value from access key from point 2 above into AWS_ACCESS_KEY and put secret access key into
 AWS_SECRET
+
+## actions that need doing locally
+1. type name of tf state bucket created 'Actions that need doing in AWS (directly on the website)' in step '1' it into: 
+read_ingested_bucket_name() in ingestion.py under bucket_name variable
+read_processed_bucket_name() in parquet_to_json.py under bucket_name variable
+read_processed_bucket_name() in json_to_parquet.py under bucket_name variable
+provider.tf line 14 in the bucket variable
+
+
+
 

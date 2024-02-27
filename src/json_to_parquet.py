@@ -38,7 +38,7 @@ s3_procesed_zone_url = read_processed_bucket_name()
 # event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'eu-west-2', 'eventTime': '2024-02-26T17:09:39.532Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AROAW3MEEUQN75ZHLAIKK:dummy_lambda'}, 'requestParameters': {'sourceIPAddress': '18.130.62.80'}, 'responseElements': {'x-amz-request-id': '2TJQ73TDGEAG0TT6', 'x-amz-id-2': '2B0l1vcW9KWa/tgnjJTKmYzTuw0n0rUPK/d4fZ574Cg3DU5cTBC8IlyZORnCpxGLEMnCEyfgeFVxy5vfcGBPmdjyWzSet+3s'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-2024022616013524740000000e', 'bucket': {'name': 'ingestion-zone-the-beekeepers-20240226160055252300000002', 'ownerIdentity': {'principalId': 'A34262P35VQL60'}, 'arn': 'arn:aws:s3:::ingestion-zone-the-beekeepers-20240226160055252300000002'}, 'object': {'key': '2024-02-26-17-08-39.490526.json', 'size': 813, 'eTag': '5463168a120251ba71ff500884bd844e', 'sequencer': '0065DCC5D37C3CE829'}}}]}
 
 def json_to_parquet(event, context):
-    logger.info(event)
+    
     """
     Args:
         param1: aws event obj
