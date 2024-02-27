@@ -7,19 +7,21 @@ import boto3
 import json
 from awswrangler import exceptions
 
-from src.parquet_to_json import parquet_to_json as ptj,  InvalidFileTypeError
+from src.parquet_to_json import parquet_to_json as ptj, InvalidFileTypeError
 
-@pytest.mark.describe('parquet_to_json()')
-@pytest.mark.it('test function logs if it gets invalid file name')
+
+@pytest.mark.describe("parquet_to_json()")
+@pytest.mark.it("test function logs if it gets invalid file name")
 def test_function_logs_if_invalid_file_name(caplog):
     with caplog.at_level(logging.ERROR):
-        event = {'Records':[{'s3':{'bucket':{'name':'YO IM S3'},
-                          'object':{'key': 'YO IM KEY'}
-                          }
-                    }]}
-        context = 'no context'
+        event = {
+            "Records": [
+                {"s3": {"bucket": {"name": "YO IM S3"}, "object": {"key": "YO IM KEY"}}}
+            ]
+        }
+        context = "no context"
         ptj(event, context)
-        assert 'File YO IM KEY is not a valid parquet file' in caplog.text
+        assert "File YO IM KEY is not a valid parquet file" in caplog.text
 
 
 # @pytest.mark.describe('parquet_to_json()')
@@ -34,21 +36,27 @@ def test_function_logs_if_invalid_file_name(caplog):
 #                         }]}
 #             context = 'no context'
 #             s3 = boto3.resource('s3', region_name='eu-west-2')
-#             s3.create_bucket(Bucket='processed-zone-895623xx35', 
+#             s3.create_bucket(Bucket='processed-zone-895623xx35',
 #                         CreateBucketConfiguration={
 #                         'LocationConstraint': 'eu-west-2'})
 #             ptj(event, context)
 
 
-@pytest.mark.describe('parquet_to_json()')
-@pytest.mark.it('test function logs if it gets invalid bucket name')
+@pytest.mark.describe("parquet_to_json()")
+@pytest.mark.it("test function logs if it gets invalid bucket name")
 @mock_aws
 def test_function_logs_client_error_if_not_existing_bucket(caplog):
     with caplog.at_level(logging.ERROR):
-        event = {'Records':[{'s3':{'bucket':{'name':'YO_IM_S3'},
-                          'object':{'key': 'YO_IM_KEY.json'}
-                          }
-                    }]}
-        context = 'no context'
+        event = {
+            "Records": [
+                {
+                    "s3": {
+                        "bucket": {"name": "YO_IM_S3"},
+                        "object": {"key": "YO_IM_KEY.json"},
+                    }
+                }
+            ]
+        }
+        context = "no context"
         ptj(event, context)
-        assert 'File YO_IM_KEY.json is not a valid parquet file' in caplog.text
+        assert "File YO_IM_KEY.json is not a valid parquet file" in caplog.text

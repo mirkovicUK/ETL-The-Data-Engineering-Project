@@ -1,30 +1,32 @@
+from pg8000.native import literal
 from datetime import datetime as dt
-from datetime import timedelta
-import math
-
-from src.utils.writing_utils.get_secret import get_secret 
 
 from awswrangler import _utils
+
 pg8000 = _utils.import_optional_dependency("pg8000")
-from pg8000.native import Connection, literal, identifier, DatabaseError
 
 
 def write_dim_design(con, data, updated=dt.now()):
-    dim_design_columns = [
-        'design_record_id', 'design_id', 'design_name', 'file_location', 
-        'file_name', 'last_updated_date', 'last_updated_time']
+    # dim_design_columns = [
+    #     "design_record_id",
+    #     "design_id",
+    #     "design_name",
+    #     "file_location",
+    #     "file_name",
+    #     "last_updated_date",
+    #     "last_updated_time",
+    # ]
     for data_point in data:
         values = [
-            data_point['design_id'],
-            data_point['design_id'],
-            data_point['design_name'],
-            data_point['file_location'],
-            data_point['file_name'],
+            data_point["design_id"],
+            data_point["design_id"],
+            data_point["design_name"],
+            data_point["file_location"],
+            data_point["file_name"],
             updated.date(),
-            updated.time()
+            updated.time(),
         ]
-    
-    
+
         dim_design_query = f"""
             INSERT INTO dim_design
             VALUES
@@ -33,5 +35,5 @@ def write_dim_design(con, data, updated=dt.now()):
             {literal(values[4])},{literal(values[5])},
             {literal(values[6])})
             ON CONFLICT DO NOTHING;
-            """ 
+            """
         con.run(dim_design_query)

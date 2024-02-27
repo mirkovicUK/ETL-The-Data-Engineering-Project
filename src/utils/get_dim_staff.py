@@ -1,14 +1,16 @@
+from pg8000.native import literal, identifier
 import datetime
-from decimal import Decimal
+
 import logging
 
 import awswrangler as wr
 from awswrangler import _utils
-pg8000_native = _utils.import_optional_dependency("pg8000.native")
-from pg8000.native import literal, identifier, DatabaseError
 
-logger = logging.getLogger('MyLogger')
+pg8000_native = _utils.import_optional_dependency("pg8000.native")
+
+logger = logging.getLogger("MyLogger")
 logger.setLevel(logging.INFO)
+
 
 def get_dim_staff(con, time_of_last_query):
     """
@@ -20,10 +22,10 @@ def get_dim_staff(con, time_of_last_query):
     Raises:
         Does not raises an exception.
     Logs:
-        Logs error to cloud watch 
+        Logs error to cloud watch
     """
     try:
-        query = f"""SELECT 
+        query = f"""SELECT
                        {identifier('staff')}.{identifier('staff_id')},
                         {identifier('staff')}.{identifier('first_name')},
                         {identifier('staff')}.{identifier('last_name')},
@@ -41,30 +43,37 @@ def get_dim_staff(con, time_of_last_query):
                     """
         rows = con.run(query)
 
-        dim_staff={'dim_staff':[]}
+        dim_staff = {"dim_staff": []}
         for row in rows:
-            data_point={}
+            data_point = {}
             for ii, value in enumerate(row):
-                if ii==0:
-                    data_point['staff_record_id'] = value
-                elif ii==1:
-                    data_point['first_name'] = value
-                elif ii==2:
-                    data_point['last_name'] = value
-                elif ii==3:
-                    data_point['department_name'] = value
-                elif ii==4:
-                    data_point['location'] = value
-                elif ii==5:
-                    data_point['email_address'] = value
+                if ii == 0:
+                    data_point["staff_record_id"] = value
+                elif ii == 1:
+                    data_point["first_name"] = value
+                elif ii == 2:
+                    data_point["last_name"] = value
+                elif ii == 3:
+                    data_point["department_name"] = value
+                elif ii == 4:
+                    data_point["location"] = value
+                elif ii == 5:
+                    data_point["email_address"] = value
                 else:
                     pass
-            dim_staff['dim_staff'].append(data_point)
+            dim_staff["dim_staff"].append(data_point)
         return dim_staff
     except Exception as e:
         logger.error(e)
-    
+
+
 if __name__ == "__main__":
-    print(*get_dim_staff(wr.postgresql.connect(secret_id = "totesys_db"), 
-            datetime.datetime.strptime('2022-09-10 18:32:09.709000',
-                                       '%Y-%m-%d %H:%M:%S.%f'))['dim_staff'], sep='\n')
+    print(
+        *get_dim_staff(
+            wr.postgresql.connect(secret_id="totesys_db"),
+            datetime.datetime.strptime(
+                "2022-09-10 18:32:09.709000", "%Y-%m-%d %H:%M:%S.%f"
+            ),
+        )["dim_staff"],
+        sep="\n",
+    )

@@ -1,5 +1,5 @@
 def tf_bucket_name():
-    '''
+    """
     # ---
     # ## Args:
     # ---
@@ -17,6 +17,6 @@ def tf_bucket_name():
     # lengthen_date('21.03.2017')
     # # 'Tuesday 21st March 2017'
     # ```
-    '''
-    bucket_name = 'terraform-12345'
+    """
+    # bucket_name = 'terraform-12345'
     pass
