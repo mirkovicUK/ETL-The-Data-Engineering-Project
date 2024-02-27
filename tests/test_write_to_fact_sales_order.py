@@ -1,7 +1,7 @@
 from src.utils.writing_utils.write_to_fact_sales_order import write_to_fact_sales_order as write_fso
-
+import pytest
 import awswrangler as wr
-
+@pytest.mark.skip
 def test_shape():
     data = [{
             "agreed_delivery_date": "2024-02-25",
@@ -18,6 +18,7 @@ def test_shape():
             "sales_staff_id": 20,
             "unit_price": "3.47",
             "units_sold": 44148}]
-#     con = wr.postgresql.connect(secret_id = 'DB_write')
-#     write_fso(con, data)
-#     con.close()
+    con = wr.postgresql.connect(secret_id = 'data_warehouse')
+    
+    write_fso(con, data)
+    con.close()
