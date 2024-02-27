@@ -155,10 +155,10 @@ AWS_SECRET
 
 ## actions that need doing locally
 1. type name of tf state bucket created 'Actions that need doing in AWS (directly on the website)' in step '1' it into: 
-read_ingested_bucket_name() in ingestion.py under bucket_name variable
-read_processed_bucket_name() in parquet_to_json.py under bucket_name variable
-read_processed_bucket_name() in json_to_parquet.py under bucket_name variable
-provider.tf line 14 in the bucket variable
+- read_ingested_bucket_name() in ingestion.py under bucket_name variable
+- read_processed_bucket_name() in parquet_to_json.py under bucket_name variable
+- read_processed_bucket_name() in json_to_parquet.py under bucket_name variable
+- provider.tf line 14 in the bucket variable
 
 
 
