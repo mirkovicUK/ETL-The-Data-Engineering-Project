@@ -25,6 +25,6 @@ def test_correct_data_is_written_to_DB():
     #                 database = secret['dbname'],
     #                 password = secret['password'])
     # wdd(con, data, dt.now() )
-    # # rows = con.run("DELETE FROM dim_design; ;")
-    # rows = con.run("SELECT * FROM dim_design ;")
+    # rows = con.run("DELETE FROM dim_design; ;")
+    # rows = con.run("SELECT * FROM dim_design LIMIT 10;")
     # print(*rows, '<----------dim_design', sep='\n')

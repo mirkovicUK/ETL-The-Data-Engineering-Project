@@ -29,7 +29,8 @@ def get_dim_location(con, time_of_last_query):
                 'district', 'city', 'postal_code', 'country', 'phone',
                 'created_at', 'last_updated']
         query = f"""SELECT * FROM {identifier(table)} 
-                WHERE last_updated>{literal(time_of_last_query)};"""
+                WHERE last_updated>{literal(time_of_last_query)}
+                ;"""
         rows = con.run(query)
 
         dim_location={'dim_location':[]}
