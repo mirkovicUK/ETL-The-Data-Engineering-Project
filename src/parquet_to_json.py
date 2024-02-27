@@ -48,7 +48,7 @@ s3_procesed_zone_url = read_processed_bucket_name()
 
 
 DB = 'data_warehouse'
-=======
+
 s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
 DB = 'DB_write'
 
