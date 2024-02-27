@@ -1,12 +1,15 @@
 import logging
 import boto3
+import boto3
 from botocore.exceptions import ClientError, ParamValidationError
 import json 
 import datetime 
+import time
 from decimal import Decimal
 
 import awswrangler as wr
 from awswrangler import _utils
+import json
 
 pg8000 = _utils.import_optional_dependency("pg8000")
 pg8000_native = _utils.import_optional_dependency("pg8000.native")
@@ -16,9 +19,20 @@ from pg8000.native import Connection, literal, identifier, DatabaseError
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 
-DB = "totesys_db"
-INGESTION_BUCKET = 'ingestion-zone-895623xx35'
+DB = "new_tote"
 
+
+def read_ingested_bucket_name():
+    s3 = boto3.client('s3')
+    bucket_name = "terraform-12345" 
+    object_key = "tf-state"   
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+    data = json.loads(response['Body'].read().decode('utf-8'))
+    ingested_bucket_name = data["outputs"]["ingested_bucket"]["value"]
+           
+    return ingested_bucket_name
+INGESTION_BUCKET = read_ingested_bucket_name()
+bucket_name= INGESTION_BUCKET
 
 def ingestion(event, context):
     """
@@ -336,3 +350,5 @@ def get_dim_design(con, time_of_last_query):
 
 if __name__ == "__main__":
     print(ingestion(None, None))
+    # print(get_time_of_last_query(),'get')
+    # set_time_of_the_last_query(datetime.datetime(2020, 2, 20, 18, 14, 14))

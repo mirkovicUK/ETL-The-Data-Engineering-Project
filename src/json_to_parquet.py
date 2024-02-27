@@ -9,10 +9,36 @@ import datetime
 logger = logging.getLogger('MyLogger')
 logger.setLevel(logging.INFO)
 
-s3_procesed_zone_url = 's3://processed-zone-895623xx35/'
+def read_processed_bucket_name():
+    s3 = boto3.client('s3')
+    bucket_name = "terraform-12345" 
+    object_key = "tf-state"   
+    response = s3.get_object(Bucket=bucket_name, Key=object_key)
+    data = json.loads(response['Body'].read().decode('utf-8'))
+    processed_bucket_name = data["outputs"]["parquet_bucket"]["value"]
+           
+    return f's3://{processed_bucket_name}/'
 
+
+# def read_ingested_bucket_name():
+#     s3 = boto3.client('s3')
+#     bucket_name = "terraform-12345" 
+#     object_key = "tf-state"   
+#     response = s3.get_object(Bucket=bucket_name, Key=object_key)
+#     data = json.loads(response['Body'].read().decode('utf-8'))
+#     ingested_bucket_name = data["outputs"]["ingested_bucket"]["value"]
+           
+#     return ingested_bucket_name
+# INGESTION_BUCKET = read_ingested_bucket_name()
+# s3_bucket_name= INGESTION_BUCKET
+
+s3_procesed_zone_url = read_processed_bucket_name() 
+
+
+# event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'eu-west-2', 'eventTime': '2024-02-26T17:09:39.532Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AROAW3MEEUQN75ZHLAIKK:dummy_lambda'}, 'requestParameters': {'sourceIPAddress': '18.130.62.80'}, 'responseElements': {'x-amz-request-id': '2TJQ73TDGEAG0TT6', 'x-amz-id-2': '2B0l1vcW9KWa/tgnjJTKmYzTuw0n0rUPK/d4fZ574Cg3DU5cTBC8IlyZORnCpxGLEMnCEyfgeFVxy5vfcGBPmdjyWzSet+3s'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-2024022616013524740000000e', 'bucket': {'name': 'ingestion-zone-the-beekeepers-20240226160055252300000002', 'ownerIdentity': {'principalId': 'A34262P35VQL60'}, 'arn': 'arn:aws:s3:::ingestion-zone-the-beekeepers-20240226160055252300000002'}, 'object': {'key': '2024-02-26-17-08-39.490526.json', 'size': 813, 'eTag': '5463168a120251ba71ff500884bd844e', 'sequencer': '0065DCC5D37C3CE829'}}}]}
 
 def json_to_parquet(event, context):
+    logger.info(event)
     """
     Args:
         param1: aws event obj
@@ -87,3 +113,5 @@ def get_text_from_file(client, bucket, object_key):
 class InvalidFileTypeError(Exception):
     """Traps error where file type is not .json"""
     pass
+
+# json_to_parquet(event, 'context')
