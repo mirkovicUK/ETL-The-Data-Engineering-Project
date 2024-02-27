@@ -1,5 +1,5 @@
 import datetime
-from decimal import Decimal
+from decimal import Decimal 
 import logging
 
 import awswrangler as wr
