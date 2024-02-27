@@ -177,7 +177,7 @@ def proba(con):
         # con.run(dim_design_query)
         # con.run(dim_location_query)
         # con.run(fact_sales_order_query)
-        print()
+        
         print(len(con.run("SELECT * FROM project_team_5.dim_date;")), '<----------DIM_DATE')
         print(len(con.run("SELECT * FROM fact_sales_order;")), '<----------FACT SALES ORDER')
         print(len(con.run("SELECT * FROM dim_staff;")), '<----------DIM_STAFF')
@@ -217,5 +217,7 @@ if __name__ == "__main__":
     #                 password = secret['password'])
 
     con = wr.postgresql.connect(secret_id = 'DB_write')
+    print()
+    print(dt.now())
 
     proba(con)
