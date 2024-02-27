@@ -139,3 +139,6 @@ This is a fairly realistic simulation of a typical data engineering project. In 
 Above all, don't rush: it will be better to deliver a high-quality MVP than a more complex but poorly-engineered platform. 
 
 Enjoy this! And good luck!
+
+stuff that needs doing in AWS
+1. make a tf state bucket and type name of it into 
