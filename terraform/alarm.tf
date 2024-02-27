@@ -130,49 +130,49 @@ resource "aws_cloudwatch_metric_alarm" "RuntimeError_error_alarm" {
 }
 
 # Runtime error##############################################################################################
-resource "aws_cloudwatch_log_metric_filter" "RuntimeError_error_dummy_lambda" {
-  name           = "RuntimeError_error"
+resource "aws_cloudwatch_log_metric_filter" "Runtime_error_dummy_lambda" {
+  name           = "Runtime_error"
   pattern        = "Runtime" #string to search for
   log_group_name = "/aws/lambda/${var.dummy_json_lambda}"
   metric_transformation {
-    name      = "RuntimeErrorErrorCount"
-    namespace = "RuntimeErrorLambdaLoadMetrics"
+    name      = "RuntimeErrorCount"
+    namespace = "RuntimeLambdaLoadMetrics"
     value     = "1"
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "RuntimeError_error_json_to_parquet_lambda" {
-  name           = "RuntimeError_error"
+resource "aws_cloudwatch_log_metric_filter" "Runtime_error_json_to_parquet_lambda" {
+  name           = "Runtime_error"
   pattern        = "Runtime" #string to search for
   log_group_name = "/aws/lambda/${var.parquet_lambda_name}"
   metric_transformation {
-    name      = "RuntimeErrorErrorCount"
-    namespace = "RuntimeErrorLambdaLoadMetrics"
+    name      = "RuntimeErrorCount"
+    namespace = "RuntimeLambdaLoadMetrics"
     value     = "1"
   }
 }
 
-resource "aws_cloudwatch_log_metric_filter" "RuntimeError_error_parquet_to_json_lambda" {
-  name           = "RuntimeError_error"
+resource "aws_cloudwatch_log_metric_filter" "Runtime_error_parquet_to_json_lambda" {
+  name           = "Runtime_error"
   pattern        = "Runtime" #string to search for
   log_group_name = "/aws/lambda/${var.json_to_parquet_lambda}"
   metric_transformation {
-    name      = "RuntimeErrorErrorCount"
-    namespace = "RuntimeErrorLambdaLoadMetrics"
+    name      = "RuntimeErrorCount"
+    namespace = "RuntimeLambdaLoadMetrics"
     value     = "1"
   }
 }
 
 
-resource "aws_cloudwatch_metric_alarm" "RuntimeError_error_alarm" {
-  alarm_name          = "RuntimeError_error_alarm" 
-  metric_name         = "RuntimeErrorErrorCount" # must match metric transformation name
+resource "aws_cloudwatch_metric_alarm" "Runtime_error_alarm" {
+  alarm_name          = "Runtime_error_alarm" 
+  metric_name         = "RuntimeErrorCount" # must match metric transformation name
   evaluation_periods  = 1
   period              = 10
   threshold           = 1
   statistic           = "Sum"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  namespace           = "RuntimeErrorLambdaLoadMetrics" #must match metric transformation namespace
+  namespace           = "RuntimeLambdaLoadMetrics" #must match metric transformation namespace
   alarm_actions       = [aws_sns_topic.error_alerts.arn]
   alarm_description   = "resource not found"
 }

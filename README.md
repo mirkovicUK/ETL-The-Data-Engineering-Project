@@ -141,4 +141,12 @@ Above all, don't rush: it will be better to deliver a high-quality MVP than a mo
 Enjoy this! And good luck!
 
 stuff that needs doing in AWS
-1. make a tf state bucket and type name of it into 
+1. make a tf state S3 bucket (on the AWS website) and type name of it into read_ingested_bucket_name() in ingestion.py under bucket_name variable
+2. make a user with full admin access and note the access key and secret access key
+3. make secret named 'new_tote' containing the log in info for the database containing all the raw information
+
+stuff that needs doing on github.com
+1. make a new secret on https://github.com/<'your github username'>/<'your project name'>/settings/secrets/actions and name them
+AWS_ACCESS_KEY and AWS_SECRET, put the value from access key from point 2 above into AWS_ACCESS_KEY and put secret access key into
+AWS_SECRET
+
