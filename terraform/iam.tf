@@ -20,7 +20,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 
 data "aws_iam_policy_document" "s3_document" {
   statement {
- 
+    effect = "Allow"
     actions = ["s3:GetObject", "s3:PutObject", "s3:ListBucket", "s3:ListAllMyBuckets"]
 
     resources = [
