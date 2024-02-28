@@ -6,3 +6,5 @@ cache
 .env
 .terraform*
 .coverage
+scheduler.py
+read_db.txt
