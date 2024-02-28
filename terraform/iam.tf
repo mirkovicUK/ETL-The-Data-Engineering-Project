@@ -64,17 +64,6 @@ data "aws_iam_policy_document" "cw_document" {
     ]
   }
 
-  # allow lambda to upload files to s3
-  # statement {
-
-  #   effect = "Allow"
-  #   actions = [ "s3:*" ]
-
-  #   resources = [
-  #      "arn:aws:s3:::*"
-  #   ]
-  # }
-
   #allowe lamda to read parameter store
   statement {
 
