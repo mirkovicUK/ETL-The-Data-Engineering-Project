@@ -22,10 +22,11 @@ data "aws_iam_policy_document" "s3_document" {
   statement {
 
     
-    actions = ["s3:GetObject"]
+    actions = ["s3:GetObject", "s3:PutObject"]
 
     resources = [
       "${aws_s3_bucket.json_bucket.arn}/*",
+      "${aws_s3_bucket.parquet_bucket.arn}/*"
     ]
   }
 }
