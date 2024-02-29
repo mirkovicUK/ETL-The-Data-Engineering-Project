@@ -63,7 +63,7 @@ def ingestion(event, context):
 
         #ingestion write only JSON with data
         for table in sales['sales']:
-            for k,v in table.items():
+            for _,v in table.items():
                 if len(v)>0:
                     put_object_into_s3_bucket(data=sales,
                                   bucket_name=INGESTION_BUCKET,
@@ -93,11 +93,12 @@ def put_object_into_s3_bucket(data, bucket_name, key):
             Bucket=bucket_name,
             Key = key+'.json',
             )
-    except Exception as e:
-        raise RuntimeError(e)
     except ClientError as e:
         logging.error(e.response['Error']['Message'])
         raise ClientError(e)
+    except Exception as e:
+        raise RuntimeError(e)
+    
     
 
 def set_time_of_the_last_query(time):
