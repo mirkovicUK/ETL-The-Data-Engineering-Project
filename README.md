@@ -1,18 +1,5 @@
 # The Data Engineering Project
 
-**Read this document carefully - it contains (almost) all you need to know about the project!**
-
-## Objective
-
-The project phase is intended to allow you to showcase some of the skills and knowledge you have acquired over the past few weeks. You will create applications that will Extract, Transform and Load data from a prepared source into a data lake and warehouse hosted in AWS. Your solution should be reliable, resilient and (as far as possible) deployed and managed in code.
-
-By the end of the project, you should have:
-- written some applications in Python that interact with AWS and database infrastructure and manipulate data as required
-- remodelled data into a data warehouse hosted in AWS
-- demonstrated that your project is well-monitored and that you can measure its performance
-- deployed at least part of the project using scripting or automation.
-
-Your solution should showcase your knowledge of Python, SQL, database modelling, AWS, good operational practices and Agile working.
 
 ## The Minimum Viable Product (MVP)
 
